@@ -121,7 +121,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Image.asset('assets/icons/Vector (1).png'),
                 title: 'Dark Mode',
                 subTitle: 'Use the toggle to turn on/off',
-                icon: ToggleButtons(children: [], isSelected: [])),
+                icon: ToggleButtons(isSelected: const [], children: const [])),
             settingsWidget(
                 child: Image.asset('assets/icons/bx_support.png'),
                 title: 'Support',

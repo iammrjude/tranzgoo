@@ -83,9 +83,9 @@ https://your-vercel-domain.vercel.app/api/health
 
 Useful official docs:
 
-- Vercel Node.js Runtime: https://vercel.com/docs/functions/runtimes/node-js
-- Vercel Environment Variables: https://vercel.com/docs/environment-variables
-- MongoDB Atlas free cluster: https://www.mongodb.com/docs/atlas/tutorial/deploy-free-tier-cluster/
+- Vercel Node.js Runtime: <https://vercel.com/docs/functions/runtimes/node-js>
+- Vercel Environment Variables: <https://vercel.com/docs/environment-variables>
+- MongoDB Atlas free cluster: <https://www.mongodb.com/docs/atlas/tutorial/deploy-free-tier-cluster>
 
 ## Main Routes
 
