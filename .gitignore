@@ -42,3 +42,9 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# FVM generated files
+.fvm/
+
+# Optional: local VS Code settings
+.vscode/
