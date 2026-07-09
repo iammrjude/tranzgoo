@@ -1,6 +1,6 @@
 # TranzGOO API
 
-Node.js API for the TranzGOO Flutter app. It is designed to run locally with Vercel CLI and deploy to Vercel as serverless functions.
+Node.js API for the TranzGOO Flutter app. It runs locally with a small Node server and deploys to Vercel as one catch-all Serverless Function.
 
 ## What This Backend Includes
 
@@ -16,9 +16,18 @@ The service purchase endpoints currently simulate purchases by debiting the user
 
 ## Requirements
 
-- Node.js 18 or newer
+- Node.js 24.x
 - MongoDB Atlas database
-- Vercel CLI for local serverless development
+
+## Project Structure
+
+```text
+api/[...path].js    One Vercel Serverless Function entrypoint
+routes/             Internal route handlers kept as separate files
+src/router.js       Dispatches /api/* requests to the right handler
+```
+
+This keeps the code organized across 35 handler files while Vercel only counts one deployed Serverless Function.
 
 ## Local Setup
 
@@ -42,28 +51,35 @@ CORS_ORIGIN=http://localhost:3000
 Start the API locally:
 
 ```powershell
-npm install -g vercel
 npm run dev
 ```
 
-Vercel CLI usually serves the API at:
+The local server serves the API at:
 
 ```text
 http://localhost:3000/api/health
 ```
 
+Validate the route setup:
+
+```powershell
+npm run check
+```
+
+That check confirms the Vercel function count stays under the Hobby plan limit.
+
 ## Deploy To Vercel
 
 1. Push this repository to GitHub.
-2. In Vercel, create a new project.
-3. Choose this repo.
-4. Set the root directory to:
+1. In Vercel, create a new project.
+1. Choose this repo.
+1. Set the root directory to:
 
 ```text
 backend
 ```
 
-5. Add environment variables in Vercel Project Settings:
+1. Add environment variables in Vercel Project Settings:
 
 ```text
 MONGODB_URI
@@ -73,7 +89,7 @@ CORS_ORIGIN
 NODE_ENV=production
 ```
 
-6. Deploy.
+1. Deploy.
 
 After deployment, test:
 

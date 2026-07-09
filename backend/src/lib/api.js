@@ -89,5 +89,6 @@ module.exports = {
   sendError,
   sendJson,
   sendSuccess,
+  setCorsHeaders,
   withApi
 };
