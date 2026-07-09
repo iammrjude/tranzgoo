@@ -4,10 +4,23 @@ import 'package:tranzgoo/presentation/view/auth_view/login_screen.dart';
 import 'package:tranzgoo/presentation/view/auth_view/register_screen.dart';
 import 'package:tranzgoo/presentation/view/auth_view/splash_screen.dart';
 import 'package:tranzgoo/presentation/view/auth_view/welcome_screen.dart';
+import 'package:tranzgoo/presentation/view/history/history_view.dart';
 import 'package:tranzgoo/presentation/view/home_view/base_screen.dart';
 import 'package:tranzgoo/presentation/view/home_view/fund_account.dart';
 import 'package:tranzgoo/presentation/view/home_view/home_screen.dart';
 import 'package:tranzgoo/presentation/view/home_view/send_screen.dart';
+import 'package:tranzgoo/presentation/view/profile/edit_profile_view.dart';
+import 'package:tranzgoo/presentation/view/profile/legal_view.dart';
+import 'package:tranzgoo/presentation/view/profile/notifications_view.dart';
+import 'package:tranzgoo/presentation/view/profile/referrals_view.dart';
+import 'package:tranzgoo/presentation/view/profile/support_view.dart';
+import 'package:tranzgoo/presentation/view/services/airtime2cash_view.dart';
+import 'package:tranzgoo/presentation/view/services/airtime_view.dart';
+import 'package:tranzgoo/presentation/view/services/cable_view.dart';
+import 'package:tranzgoo/presentation/view/services/data_view.dart';
+import 'package:tranzgoo/presentation/view/services/education_view.dart';
+import 'package:tranzgoo/presentation/view/services/electricity_view.dart';
+import 'package:tranzgoo/presentation/view/services/services_view.dart';
 
 class AppRoutes {
   static const String splashView = '/splashView';
@@ -19,6 +32,19 @@ class AppRoutes {
   static const String baseView = '/baseView';
   static const String fundAccountView = '/fundAccountView';
   static const String sendView = '/sendView';
+  static const String servicesView = '/servicesView';
+  static const String historyView = '/historyView';
+  static const String airtimeView = '/airtimeView';
+  static const String dataView = '/dataView';
+  static const String airtimeToCashView = '/airtimeToCashView';
+  static const String educationView = '/educationView';
+  static const String electricityView = '/electricityView';
+  static const String cableView = '/cableView';
+  static const String editProfileView = '/editProfileView';
+  static const String notificationsView = '/notificationsView';
+  static const String referralsView = '/referralsView';
+  static const String supportView = '/supportView';
+  static const String legalView = '/legalView';
 
   static Map<String, WidgetBuilder> getRoutes() {
     return {
@@ -30,7 +56,20 @@ class AppRoutes {
       AppRoutes.createAccountView: (_) => const CreateAccountScreen(),
       AppRoutes.baseView: (_) => const BaseView(),
       AppRoutes.fundAccountView: (_) => const FundAccount(),
-      AppRoutes.sendView:(_)=> const SendView(),
+      AppRoutes.sendView: (_) => const SendView(),
+      AppRoutes.servicesView: (_) => const ServiceScreen(),
+      AppRoutes.historyView: (_) => const HistoryScreen(),
+      AppRoutes.airtimeView: (_) => const AirtimeScreen(),
+      AppRoutes.dataView: (_) => const DataScreen(),
+      AppRoutes.airtimeToCashView: (_) => const Airtime2cash(),
+      AppRoutes.educationView: (_) => const EducationScreen(),
+      AppRoutes.electricityView: (_) => const ElectricityScreen(),
+      AppRoutes.cableView: (_) => const CableScreen(),
+      AppRoutes.editProfileView: (_) => const EditProfileScreen(),
+      AppRoutes.notificationsView: (_) => const NotificationsScreen(),
+      AppRoutes.referralsView: (_) => const ReferralsScreen(),
+      AppRoutes.supportView: (_) => const SupportScreen(),
+      AppRoutes.legalView: (_) => const LegalScreen(),
     };
   }
 }

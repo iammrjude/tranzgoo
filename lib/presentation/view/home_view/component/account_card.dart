@@ -4,7 +4,16 @@ import 'package:tranzgoo/utils/theme/app_colors.dart';
 import 'package:tranzgoo/utils/theme/app_style.dart';
 
 class AccountCard extends StatelessWidget {
-  const AccountCard({Key? key}) : super(key: key);
+  final String balance;
+  final VoidCallback? onSend;
+  final VoidCallback? onFund;
+
+  const AccountCard({
+    Key? key,
+    this.balance = '0.00',
+    this.onSend,
+    this.onFund,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +35,16 @@ class AccountCard extends StatelessWidget {
           ),
           Row(
             children: [
-              Text(
-                '₦ 1,000,000',
-                style: AppText.extraBold
-                    .copyWith(color: AppColors.whiteColor, fontSize: 20),
+              Expanded(
+                child: Text(
+                  'NGN $balance',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppText.extraBold
+                      .copyWith(color: AppColors.whiteColor, fontSize: 20),
+                ),
               ),
-              const SizedBox(
-                width: 10,
-              ),
+              const SizedBox(width: 10),
               const Icon(
                 Icons.visibility,
                 size: 14,
@@ -41,60 +52,58 @@ class AccountCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(
-            height: 15,
-          ),
+          const SizedBox(height: 15),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               GestureDetector(
-                onTap: (){
-                  Navigator.pushNamed(context, '/sendView');
-                },
+                onTap:
+                    onSend ?? () => Navigator.pushNamed(context, '/sendView'),
                 child: Container(
                   height: 39.h,
                   width: 118.w,
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: AppColors.whiteColor),
+                    borderRadius: BorderRadius.circular(12),
+                    color: AppColors.whiteColor,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Image.asset('assets/icons/sendIcon.png'),
-                      const SizedBox(
-                        width: 10,
-                      ),
+                      const SizedBox(width: 10),
                       Text(
-                        'send',
+                        'Send',
                         style: AppText.extraBold.copyWith(
-                            color: AppColors.primaryColor, fontSize: 16),
+                          color: AppColors.primaryColor,
+                          fontSize: 16,
+                        ),
                       ),
                     ],
                   ),
                 ),
               ),
               GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(context, '/fundAccountView');
-                },
+                onTap: onFund ??
+                    () => Navigator.pushNamed(context, '/fundAccountView'),
                 child: Container(
                   height: 39.h,
                   width: 151.w,
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: AppColors.whiteColor),
+                    borderRadius: BorderRadius.circular(12),
+                    color: AppColors.whiteColor,
+                  ),
                   child: Row(
                     children: [
                       Image.asset('assets/icons/addIcon.png'),
-                      const SizedBox(
-                        width: 10,
-                      ),
+                      const SizedBox(width: 10),
                       Text(
                         'Fund Account',
                         style: AppText.extraBold.copyWith(
-                            color: AppColors.primaryColor, fontSize: 16),
+                          color: AppColors.primaryColor,
+                          fontSize: 16,
+                        ),
                       ),
                     ],
                   ),

@@ -11,6 +11,7 @@ class AppTextField extends StatefulWidget {
   final double? width;
   final bool textCenter;
   final double? height;
+  final TextInputType? keyboardType;
   final Function(String)? validate;
   const AppTextField({
     Key? key,
@@ -22,6 +23,7 @@ class AppTextField extends StatefulWidget {
     required this.hintText,
     this.width,
     this.height,
+    this.keyboardType,
   }) : super(key: key);
 
   @override
@@ -40,6 +42,7 @@ class _AppTextFieldState extends State<AppTextField> {
       ),
       child: TextFormField(
         controller: widget.controller,
+        keyboardType: widget.keyboardType,
         textAlign: widget.textCenter ? TextAlign.center : TextAlign.start,
         textAlignVertical: TextAlignVertical.bottom,
         obscureText: widget.isObscure && !isPasswordVisible,

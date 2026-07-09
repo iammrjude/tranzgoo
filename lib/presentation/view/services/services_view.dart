@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:tranzgoo/data/services/api_exception.dart';
+import 'package:tranzgoo/data/services/tranzgoo_api_service.dart';
+import 'package:tranzgoo/utils/routes/app_routes.dart';
 import 'package:tranzgoo/utils/theme/app_colors.dart';
 import 'package:tranzgoo/utils/theme/app_style.dart';
+import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 
 class ServiceScreen extends StatefulWidget {
   const ServiceScreen({Key? key}) : super(key: key);
@@ -11,6 +15,50 @@ class ServiceScreen extends StatefulWidget {
 }
 
 class _ServiceScreenState extends State<ServiceScreen> {
+  final TranzgooApiService _apiService = TranzgooApiService();
+  List<Map<String, dynamic>> services = [];
+  bool isLoading = true;
+  String? errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    loadServices();
+  }
+
+  Future<void> loadServices() async {
+    setState(() {
+      isLoading = true;
+      errorMessage = null;
+    });
+
+    try {
+      final data = await _apiService.getServices();
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        services = data;
+      });
+    } on ApiException catch (error) {
+      setState(() {
+        errorMessage = error.message;
+      });
+    } catch (_) {
+      setState(() {
+        errorMessage = 'Unable to load services.';
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,40 +81,83 @@ class _ServiceScreenState extends State<ServiceScreen> {
               const SizedBox(
                 height: 13,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  serviceContainer(Image.asset('assets/icons/phoneIcon.png'),
-                      'Airtime', () => null),
-                  serviceContainer(Image.asset('assets/icons/internet.png'),
-                      'Data', () => null),
-                  serviceContainer(
-                      Image.asset(
-                        'assets/icons/swap.png',
-                      ),
-                      'Airtime2Cash',
-                      () => null)
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  serviceContainer(Image.asset('assets/icons/education.png'),
-                      'Education', () => null),
-                  serviceContainer(Image.asset('assets/icons/electricity.png'),
-                      'Electricity', () => null),
-                  serviceContainer(Image.asset('assets/icons/tv.png'),
-                      'Cable TV', () => null)
-                ],
-              )
+              if (isLoading)
+                const Expanded(child: AppLoadingState())
+              else if (errorMessage != null)
+                Expanded(
+                  child: AppErrorState(
+                    message: errorMessage!,
+                    onRetry: loadServices,
+                  ),
+                )
+              else
+                Wrap(
+                  spacing: 14.w,
+                  runSpacing: 20,
+                  children: serviceTiles(context),
+                ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  List<Widget> serviceTiles(BuildContext context) {
+    final knownServices = services.isEmpty
+        ? [
+            {'id': 'airtime', 'name': 'Airtime'},
+            {'id': 'data', 'name': 'Data'},
+            {'id': 'airtime-to-cash', 'name': 'Airtime2Cash'},
+            {'id': 'education', 'name': 'Education'},
+            {'id': 'electricity', 'name': 'Electricity'},
+            {'id': 'cable', 'name': 'Cable TV'},
+          ]
+        : services;
+
+    return knownServices.map((service) {
+      final id = service['id']?.toString() ?? '';
+      final name = service['name']?.toString() ?? '';
+      return serviceContainer(
+        serviceIcon(id),
+        name,
+        () => openService(context, id),
+      );
+    }).toList();
+  }
+
+  Widget serviceIcon(String id) {
+    final icons = {
+      'airtime': 'assets/icons/phoneIcon.png',
+      'data': 'assets/icons/internet.png',
+      'airtime-to-cash': 'assets/icons/swap.png',
+      'education': 'assets/icons/education.png',
+      'electricity': 'assets/icons/electricity.png',
+      'cable': 'assets/icons/tv.png',
+    };
+
+    return Image.asset(icons[id] ?? 'assets/icons/service.png');
+  }
+
+  void openService(BuildContext context, String id) {
+    final routes = {
+      'airtime': AppRoutes.airtimeView,
+      'data': AppRoutes.dataView,
+      'airtime-to-cash': AppRoutes.airtimeToCashView,
+      'education': AppRoutes.educationView,
+      'electricity': AppRoutes.electricityView,
+      'cable': AppRoutes.cableView,
+    };
+    final route = routes[id];
+
+    if (route == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('This service is not available yet.')),
+      );
+      return;
+    }
+
+    Navigator.pushNamed(context, route);
   }
 }
 

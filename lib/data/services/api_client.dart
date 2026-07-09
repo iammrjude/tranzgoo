@@ -54,6 +54,26 @@ class ApiClient {
     return _decode(response);
   }
 
+  Future<Map<String, dynamic>> patch(
+    String path,
+    Map<String, dynamic> body, {
+    bool authenticated = false,
+  }) async {
+    final response = await _send(
+      () async {
+        return _httpClient
+            .patch(
+              ApiConfig.uri(path),
+              headers: await _headers(authenticated: authenticated),
+              body: jsonEncode(body),
+            )
+            .timeout(ApiConfig.timeout);
+      },
+    );
+
+    return _decode(response);
+  }
+
   Future<Map<String, String>> _headers({required bool authenticated}) async {
     final headers = <String, String>{
       'Accept': 'application/json',
