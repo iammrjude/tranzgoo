@@ -5,6 +5,7 @@ import 'package:tranzgoo/data/services/api_exception.dart';
 import 'package:tranzgoo/data/services/tranzgoo_api_service.dart';
 import 'package:tranzgoo/utils/theme/app_colors.dart';
 import 'package:tranzgoo/utils/theme/app_style.dart';
+import 'package:tranzgoo/utils/widget/app_clickable_surface.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 
 class FundAccount extends StatefulWidget {
@@ -175,8 +176,12 @@ Widget fundAccountContainer({
                 ),
               ],
             ),
-            GestureDetector(
+            AppClickableSurface(
               onTap: onCopy,
+              semanticLabel: 'Copy account number',
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(8),
+              padding: const EdgeInsets.all(6),
               child: const Column(
                 children: [
                   Icon(

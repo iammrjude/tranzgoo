@@ -127,9 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                GestureDetector(
-                    onLongPress: () {},
-                    child: Image.asset('assets/icons/fingerprint.png'))
+                Image.asset('assets/icons/fingerprint.png')
               ],
             ),
           ),

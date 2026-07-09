@@ -5,6 +5,7 @@ import 'package:tranzgoo/data/services/tranzgoo_api_service.dart';
 import 'package:tranzgoo/utils/routes/app_routes.dart';
 import 'package:tranzgoo/utils/theme/app_colors.dart';
 import 'package:tranzgoo/utils/theme/app_style.dart';
+import 'package:tranzgoo/utils/widget/app_clickable_surface.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -247,55 +248,56 @@ Widget settingsWidget({
   Widget? icon,
   VoidCallback? onTap,
 }) {
-  return GestureDetector(
+  return AppClickableSurface(
     onTap: onTap,
-    child: Container(
-      color: Colors.transparent,
-      margin: const EdgeInsets.only(bottom: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Container(
-                height: 32,
-                decoration: const BoxDecoration(
-                  color: AppColors.whiteColor,
-                  shape: BoxShape.circle,
-                ),
-                child: child,
+    semanticLabel: title,
+    color: Colors.transparent,
+    borderRadius: BorderRadius.circular(8),
+    margin: const EdgeInsets.only(bottom: 10),
+    padding: const EdgeInsets.symmetric(vertical: 6),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Container(
+              height: 32,
+              decoration: const BoxDecoration(
+                color: AppColors.whiteColor,
+                shape: BoxShape.circle,
               ),
-              const SizedBox(width: 8),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title ?? '',
-                    style: AppText.bold.copyWith(
-                      fontSize: 14,
-                      letterSpacing: 0.09,
-                    ),
+              child: child,
+            ),
+            const SizedBox(width: 8),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title ?? '',
+                  style: AppText.bold.copyWith(
+                    fontSize: 14,
+                    letterSpacing: 0.09,
                   ),
-                  Text(
-                    subTitle ?? '',
-                    style: AppText.mediumStyle.copyWith(
-                      fontSize: 11,
-                      letterSpacing: 0.09,
-                    ),
+                ),
+                Text(
+                  subTitle ?? '',
+                  style: AppText.mediumStyle.copyWith(
+                    fontSize: 11,
+                    letterSpacing: 0.09,
                   ),
-                ],
-              )
-            ],
-          ),
-          icon ??
-              const Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: 16,
-                color: AppColors.primaryColor,
-              )
-        ],
-      ),
+                ),
+              ],
+            )
+          ],
+        ),
+        icon ??
+            const Icon(
+              Icons.arrow_forward_ios_rounded,
+              size: 16,
+              color: AppColors.primaryColor,
+            )
+      ],
     ),
   );
 }

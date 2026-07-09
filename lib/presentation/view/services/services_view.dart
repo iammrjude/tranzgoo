@@ -5,6 +5,7 @@ import 'package:tranzgoo/data/services/tranzgoo_api_service.dart';
 import 'package:tranzgoo/utils/routes/app_routes.dart';
 import 'package:tranzgoo/utils/theme/app_colors.dart';
 import 'package:tranzgoo/utils/theme/app_style.dart';
+import 'package:tranzgoo/utils/widget/app_clickable_surface.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 
 class ServiceScreen extends StatefulWidget {
@@ -161,30 +162,28 @@ class _ServiceScreenState extends State<ServiceScreen> {
   }
 }
 
-Widget serviceContainer(Widget widget, String text, Function() onTap) {
-  return GestureDetector(
+Widget serviceContainer(Widget widget, String text, VoidCallback onTap) {
+  return AppClickableSurface(
     onTap: onTap,
-    child: Container(
-      height: 96.h,
-      width: 96.w,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(7),
-          color: AppColors.whiteColor,
-          border: Border.all(color: AppColors.grey200)),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          widget,
-          const SizedBox(
-            height: 8,
-          ),
-          Text(
-            text,
-            style: AppText.extraBold
-                .copyWith(color: AppColors.primaryColor, letterSpacing: 0.09),
-          ),
-        ],
-      ),
+    semanticLabel: text,
+    height: 96.h,
+    width: 96.w,
+    color: AppColors.whiteColor,
+    border: Border.all(color: AppColors.grey200),
+    borderRadius: BorderRadius.circular(7),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        widget,
+        const SizedBox(
+          height: 8,
+        ),
+        Text(
+          text,
+          style: AppText.extraBold
+              .copyWith(color: AppColors.primaryColor, letterSpacing: 0.09),
+        ),
+      ],
     ),
   );
 }

@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tranzgoo/utils/theme/app_colors.dart';
 import 'package:tranzgoo/utils/theme/app_style.dart';
+import 'package:tranzgoo/utils/widget/app_clickable_surface.dart';
 
-class AccountCard extends StatelessWidget {
+class AccountCard extends StatefulWidget {
   final String balance;
   final VoidCallback? onSend;
   final VoidCallback? onFund;
@@ -16,7 +17,22 @@ class AccountCard extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<AccountCard> createState() => _AccountCardState();
+}
+
+class _AccountCardState extends State<AccountCard> {
+  bool isBalanceVisible = true;
+
+  void toggleBalanceVisibility() {
+    setState(() {
+      isBalanceVisible = !isBalanceVisible;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final balanceText = isBalanceVisible ? 'NGN ${widget.balance}' : 'NGN ****';
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -37,7 +53,7 @@ class AccountCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  'NGN $balance',
+                  balanceText,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: AppText.extraBold
@@ -45,10 +61,19 @@ class AccountCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              const Icon(
-                Icons.visibility,
-                size: 14,
-                color: AppColors.whiteColor,
+              IconButton(
+                onPressed: toggleBalanceVisibility,
+                tooltip: isBalanceVisible ? 'Hide balance' : 'Show balance',
+                constraints: const BoxConstraints(
+                  minHeight: 32,
+                  minWidth: 32,
+                ),
+                padding: EdgeInsets.zero,
+                icon: Icon(
+                  isBalanceVisible ? Icons.visibility : Icons.visibility_off,
+                  size: 16,
+                  color: AppColors.whiteColor,
+                ),
               ),
             ],
           ),
@@ -56,57 +81,51 @@ class AccountCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              GestureDetector(
-                onTap:
-                    onSend ?? () => Navigator.pushNamed(context, '/sendView'),
-                child: Container(
-                  height: 39.h,
-                  width: 118.w,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: AppColors.whiteColor,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Image.asset('assets/icons/sendIcon.png'),
-                      const SizedBox(width: 10),
-                      Text(
-                        'Send',
-                        style: AppText.extraBold.copyWith(
-                          color: AppColors.primaryColor,
-                          fontSize: 16,
-                        ),
+              AppClickableSurface(
+                onTap: widget.onSend ??
+                    () => Navigator.pushNamed(context, '/sendView'),
+                semanticLabel: 'Send money',
+                height: 39.h,
+                width: 118.w,
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                color: AppColors.whiteColor,
+                borderRadius: BorderRadius.circular(12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Image.asset('assets/icons/sendIcon.png'),
+                    const SizedBox(width: 10),
+                    Text(
+                      'Send',
+                      style: AppText.extraBold.copyWith(
+                        color: AppColors.primaryColor,
+                        fontSize: 16,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-              GestureDetector(
-                onTap: onFund ??
+              AppClickableSurface(
+                onTap: widget.onFund ??
                     () => Navigator.pushNamed(context, '/fundAccountView'),
-                child: Container(
-                  height: 39.h,
-                  width: 151.w,
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    color: AppColors.whiteColor,
-                  ),
-                  child: Row(
-                    children: [
-                      Image.asset('assets/icons/addIcon.png'),
-                      const SizedBox(width: 10),
-                      Text(
-                        'Fund Account',
-                        style: AppText.extraBold.copyWith(
-                          color: AppColors.primaryColor,
-                          fontSize: 16,
-                        ),
+                semanticLabel: 'Fund account',
+                height: 39.h,
+                width: 151.w,
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                color: AppColors.whiteColor,
+                borderRadius: BorderRadius.circular(12),
+                child: Row(
+                  children: [
+                    Image.asset('assets/icons/addIcon.png'),
+                    const SizedBox(width: 10),
+                    Text(
+                      'Fund Account',
+                      style: AppText.extraBold.copyWith(
+                        color: AppColors.primaryColor,
+                        fontSize: 16,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ],

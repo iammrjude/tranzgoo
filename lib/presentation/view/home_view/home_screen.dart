@@ -8,6 +8,7 @@ import 'package:tranzgoo/presentation/view/home_view/component/history_component
 import 'package:tranzgoo/utils/routes/app_routes.dart';
 import 'package:tranzgoo/utils/theme/app_colors.dart';
 import 'package:tranzgoo/utils/theme/app_style.dart';
+import 'package:tranzgoo/utils/widget/app_clickable_surface.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -151,21 +152,18 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ),
-                    GestureDetector(
+                    AppClickableSurface(
                       onTap: () => Navigator.pushNamed(
                         context,
                         AppRoutes.notificationsView,
                       ),
-                      child: Container(
-                        height: 23.h,
-                        width: 23.w,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: AppColors.primaryColor),
-                          borderRadius: BorderRadius.circular(6),
-                          color: AppColors.whiteColor,
-                        ),
-                        child: Image.asset('assets/icons/notification.png'),
-                      ),
+                      semanticLabel: 'Open notifications',
+                      height: 23.h,
+                      width: 23.w,
+                      color: AppColors.whiteColor,
+                      border: Border.all(color: AppColors.primaryColor),
+                      borderRadius: BorderRadius.circular(6),
+                      child: Image.asset('assets/icons/notification.png'),
                     )
                   ],
                 ),
@@ -296,34 +294,29 @@ Widget quickAccessContainer({
   required String text,
   required VoidCallback onTap,
 }) {
-  return GestureDetector(
+  return AppClickableSurface(
     onTap: onTap,
-    child: Container(
-      height: 50.h,
-      decoration: BoxDecoration(
-        color: AppColors.whiteColor,
-        border: Border.all(color: AppColors.primaryColor),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            icon,
-            Text(
-              text,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: AppText.mediumStyle.copyWith(
-                color: AppColors.primaryColor,
-                letterSpacing: 0.092,
-              ),
-            )
-          ],
-        ),
-      ),
+    semanticLabel: text,
+    height: 50.h,
+    color: AppColors.whiteColor,
+    border: Border.all(color: AppColors.primaryColor),
+    borderRadius: BorderRadius.circular(10),
+    padding: EdgeInsets.symmetric(horizontal: 12.w),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        icon,
+        Text(
+          text,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: AppText.mediumStyle.copyWith(
+            color: AppColors.primaryColor,
+            letterSpacing: 0.092,
+          ),
+        )
+      ],
     ),
   );
 }

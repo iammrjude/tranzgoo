@@ -3,6 +3,7 @@ import 'package:tranzgoo/data/services/api_exception.dart';
 import 'package:tranzgoo/data/services/tranzgoo_api_service.dart';
 import 'package:tranzgoo/utils/theme/app_colors.dart';
 import 'package:tranzgoo/utils/theme/app_style.dart';
+import 'package:tranzgoo/utils/widget/app_clickable_surface.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 
 class NotificationsScreen extends StatefulWidget {
@@ -118,33 +119,38 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                               final notification = notifications[index];
                               final isRead = notification['readAt'] != null;
 
-                              return GestureDetector(
-                                onTap: () => markRead(notification),
-                                child: AppInfoCard(
-                                  color: isRead
-                                      ? AppColors.whiteColor
-                                      : AppColors.primaryLightColor,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        notification['title']?.toString() ?? '',
-                                        style: AppText.extraBold.copyWith(
-                                          color: AppColors.primaryColor,
-                                          letterSpacing: 0.09,
-                                        ),
+                              return AppClickableSurface(
+                                onTap: isRead
+                                    ? null
+                                    : () => markRead(notification),
+                                semanticLabel:
+                                    notification['title']?.toString() ??
+                                        'Notification',
+                                color: isRead
+                                    ? AppColors.whiteColor
+                                    : AppColors.primaryLightColor,
+                                border: Border.all(color: AppColors.grey200),
+                                borderRadius: BorderRadius.circular(10),
+                                margin: const EdgeInsets.only(bottom: 10),
+                                padding: const EdgeInsets.all(14),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      notification['title']?.toString() ?? '',
+                                      style: AppText.extraBold.copyWith(
+                                        color: AppColors.primaryColor,
+                                        letterSpacing: 0.09,
                                       ),
-                                      const SizedBox(height: 6),
-                                      Text(
-                                        notification['message']?.toString() ??
-                                            '',
-                                        style: AppText.mediumStyle.copyWith(
-                                          letterSpacing: 0.09,
-                                        ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      notification['message']?.toString() ?? '',
+                                      style: AppText.mediumStyle.copyWith(
+                                        letterSpacing: 0.09,
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               );
                             },
