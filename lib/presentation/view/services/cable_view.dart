@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:tranzgoo/data/services/api_exception.dart';
 import 'package:tranzgoo/data/services/tranzgoo_api_service.dart';
 import 'package:tranzgoo/presentation/view/services/service_form_widgets.dart';
+import 'package:tranzgoo/presentation/view/transactions/payment_flow_models.dart';
+import 'package:tranzgoo/presentation/view/transactions/transaction_detail_screen.dart';
+import 'package:tranzgoo/utils/routes/app_routes.dart';
 import 'package:tranzgoo/utils/widget/app_button.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 import 'package:tranzgoo/utils/widget/app_textfield.dart';
@@ -21,10 +24,8 @@ class _CableScreenState extends State<CableScreen> {
   String? selectedProvider;
   String? selectedPackage;
   Map<String, dynamic>? customer;
-  String? resultMessage;
   bool isLoading = true;
   bool isValidating = false;
-  bool isSubmitting = false;
   String? errorMessage;
 
   @override
@@ -141,46 +142,83 @@ class _CableScreenState extends State<CableScreen> {
     }
   }
 
-  Future<void> buyCable() async {
+  Future<void> reviewCable() async {
     if (selectedPackage == null || smartCardController.text.trim().isEmpty) {
       showMessage('Please select a package and enter a smart card number.');
       return;
     }
 
-    setState(() {
-      isSubmitting = true;
-      resultMessage = null;
-    });
+    final cablePackage = packages.firstWhere(
+      (item) => item['id']?.toString() == selectedPackage,
+      orElse: () => <String, dynamic>{},
+    );
+    final packageName = cablePackage['name']?.toString() ?? selectedPackage!;
+    final packageAmount = cablePackage['amount']?.toString() ?? '';
 
-    try {
-      final result = await _apiService.buyCable(
-        packageId: selectedPackage!,
-        smartCardNumber: smartCardController.text,
-      );
-      final wallet = result['wallet'];
-      final balance = wallet is Map ? wallet['balance']?.toString() : null;
+    Navigator.pushNamed(
+      context,
+      AppRoutes.paymentConfirmationView,
+      arguments: PaymentConfirmationArguments(
+        title: 'Confirm Cable Payment',
+        subtitle: 'Review your smart card and package before payment.',
+        amountLabel: 'NGN $packageAmount',
+        details: [
+          ReceiptLineItem(label: 'Package', value: packageName),
+          ReceiptLineItem(
+            label: 'Smart Card',
+            value: smartCardController.text.trim(),
+          ),
+          if (customer != null)
+            ReceiptLineItem(
+              label: 'Customer',
+              value: customer!['name']?.toString() ?? '',
+            ),
+        ],
+        onConfirm: () async {
+          final result = await _apiService.buyCable(
+            packageId: selectedPackage!,
+            smartCardNumber: smartCardController.text,
+          );
+          final transaction = result['transaction'] is Map<String, dynamic>
+              ? result['transaction'] as Map<String, dynamic>
+              : <String, dynamic>{};
+          final wallet = result['wallet'];
+          final balance = wallet is Map ? wallet['balance']?.toString() : null;
+          final transactionId =
+              transaction['_id']?.toString() ?? transaction['id']?.toString();
 
-      if (!mounted) {
-        return;
-      }
-
-      setState(() {
-        resultMessage = balance == null
-            ? 'Cable subscription successful.'
-            : 'Cable subscription successful. New balance: NGN $balance';
-      });
-      showMessage('Cable subscription successful.');
-    } on ApiException catch (error) {
-      showMessage(error.message);
-    } catch (_) {
-      showMessage('Unable to complete cable purchase.');
-    } finally {
-      if (mounted) {
-        setState(() {
-          isSubmitting = false;
-        });
-      }
-    }
+          return TransactionResultArguments(
+            isSuccess: true,
+            title: 'Cable Subscription Successful',
+            message: balance == null
+                ? 'Your cable subscription has been completed.'
+                : 'Your cable subscription has been completed. New balance: NGN $balance',
+            details: [
+              ReceiptLineItem(label: 'Amount', value: 'NGN $packageAmount'),
+              ReceiptLineItem(label: 'Package', value: packageName),
+              ReceiptLineItem(
+                label: 'Smart Card',
+                value: smartCardController.text.trim(),
+              ),
+              if (transaction['reference'] != null)
+                ReceiptLineItem(
+                  label: 'Reference',
+                  value: transaction['reference'].toString(),
+                ),
+            ],
+            primaryActionLabel: transactionId == null ? null : 'View Receipt',
+            primaryActionRoute:
+                transactionId == null ? null : AppRoutes.transactionDetailView,
+            primaryActionArguments: transactionId == null
+                ? null
+                : TransactionDetailArguments(
+                    id: transactionId,
+                    transaction: transaction,
+                  ),
+          );
+        },
+      ),
+    );
   }
 
   void showMessage(String message) {
@@ -247,11 +285,6 @@ class _CableScreenState extends State<CableScreen> {
                           'Card: ${customer!['smartCardNumber'] ?? ''}',
                         ],
                       ),
-                    if (resultMessage != null)
-                      ServiceResultCard(
-                        title: 'Completed',
-                        lines: [resultMessage!],
-                      ),
                     Row(
                       children: [
                         Expanded(
@@ -266,10 +299,9 @@ class _CableScreenState extends State<CableScreen> {
                         const SizedBox(width: 10),
                         Expanded(
                           child: AppButton(
-                            onPressed: buyCable,
-                            label: 'Pay',
+                            onPressed: reviewCable,
+                            label: 'Review',
                             isText: true,
-                            isLoading: isSubmitting,
                             width: double.infinity,
                           ),
                         ),

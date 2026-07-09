@@ -1,5 +1,29 @@
 const mongoose = require('mongoose');
 
+const notificationPreferencesSchema = new mongoose.Schema(
+  {
+    accountUpdates: {
+      type: Boolean,
+      default: true
+    },
+    transactions: {
+      type: Boolean,
+      default: true
+    },
+    promotions: {
+      type: Boolean,
+      default: false
+    },
+    securityAlerts: {
+      type: Boolean,
+      default: true
+    }
+  },
+  {
+    _id: false
+  }
+);
+
 const userSchema = new mongoose.Schema(
   {
     fullName: {
@@ -61,6 +85,24 @@ const userSchema = new mongoose.Schema(
     lastLoginAt: {
       type: Date,
       default: null
+    },
+    passwordChangedAt: {
+      type: Date,
+      default: null
+    },
+    resetPasswordTokenHash: {
+      type: String,
+      default: '',
+      select: false
+    },
+    resetPasswordExpiresAt: {
+      type: Date,
+      default: null,
+      select: false
+    },
+    notificationPreferences: {
+      type: notificationPreferencesSchema,
+      default: () => ({})
     }
   },
   {
@@ -79,6 +121,9 @@ userSchema.methods.toSafeObject = function toSafeObject() {
     referralCode: this.referralCode,
     role: this.role,
     status: this.status,
+    lastLoginAt: this.lastLoginAt,
+    passwordChangedAt: this.passwordChangedAt,
+    notificationPreferences: this.notificationPreferences,
     createdAt: this.createdAt,
     updatedAt: this.updatedAt
   };

@@ -12,8 +12,12 @@ const routeDefinitions = [
   ['/auth/register', require('../routes/auth/register')],
   ['/auth/login', require('../routes/auth/login')],
   ['/auth/me', require('../routes/auth/me')],
+  ['/auth/change-password', require('../routes/auth/change-password')],
+  ['/auth/forgot-password', require('../routes/auth/forgot-password')],
+  ['/auth/reset-password', require('../routes/auth/reset-password')],
 
   ['/user/me', require('../routes/user/me')],
+  ['/user/security', require('../routes/user/security')],
   ['/users/lookup/:tranzgoId', require('../routes/users/lookup/[tranzgoId]')],
 
   ['/wallet', require('../routes/wallet')],
@@ -61,6 +65,7 @@ const routeDefinitions = [
   ],
 
   ['/notifications', require('../routes/notifications')],
+  ['/notifications/preferences', require('../routes/notifications/preferences')],
   ['/notifications/:id/read', require('../routes/notifications/[id]/read')],
   ['/referrals', require('../routes/referrals')],
   ['/referrals/invite', require('../routes/referrals/invite')],

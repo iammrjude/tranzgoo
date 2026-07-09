@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:tranzgoo/data/services/api_exception.dart';
 import 'package:tranzgoo/data/services/tranzgoo_api_service.dart';
 import 'package:tranzgoo/presentation/view/services/service_form_widgets.dart';
+import 'package:tranzgoo/presentation/view/transactions/payment_flow_models.dart';
+import 'package:tranzgoo/utils/routes/app_routes.dart';
 import 'package:tranzgoo/utils/widget/app_button.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 import 'package:tranzgoo/utils/widget/app_textfield.dart';
@@ -20,10 +22,8 @@ class _Airime2cashState extends State<Airtime2cash> {
   List<Map<String, dynamic>> networks = [];
   String? selectedNetwork;
   Map<String, dynamic>? quote;
-  Map<String, dynamic>? request;
   bool isLoading = true;
   bool isQuoting = false;
-  bool isSubmitting = false;
   String? errorMessage;
 
   @override
@@ -108,7 +108,7 @@ class _Airime2cashState extends State<Airtime2cash> {
     }
   }
 
-  Future<void> submitRequest() async {
+  Future<void> reviewRequest() async {
     if (selectedNetwork == null ||
         phoneController.text.trim().isEmpty ||
         amountController.text.trim().isEmpty) {
@@ -116,42 +116,67 @@ class _Airime2cashState extends State<Airtime2cash> {
       return;
     }
 
-    setState(() {
-      isSubmitting = true;
-      request = null;
-    });
+    final networkName = networks
+        .firstWhere(
+          (item) => item['id']?.toString() == selectedNetwork,
+          orElse: () => {'name': selectedNetwork},
+        )['name']
+        ?.toString();
 
-    try {
-      final data = await _apiService.submitAirtimeToCash(
-        network: selectedNetwork!,
-        phone: phoneController.text,
-        amount: amountController.text,
-      );
+    Navigator.pushNamed(
+      context,
+      AppRoutes.paymentConfirmationView,
+      arguments: PaymentConfirmationArguments(
+        title: 'Confirm Airtime2Cash Request',
+        subtitle: 'Review your airtime details before submitting this request.',
+        amountLabel: 'NGN ${amountController.text.trim()}',
+        details: [
+          ReceiptLineItem(label: 'Network', value: networkName ?? ''),
+          ReceiptLineItem(label: 'Phone', value: phoneController.text.trim()),
+          if (quote != null)
+            ReceiptLineItem(
+              label: 'Wallet Payout',
+              value: 'NGN ${quote!['payoutAmount'] ?? ''}',
+            ),
+        ],
+        onConfirm: () async {
+          final data = await _apiService.submitAirtimeToCash(
+            network: selectedNetwork!,
+            phone: phoneController.text,
+            amount: amountController.text,
+          );
+          final request = data['request'] is Map<String, dynamic>
+              ? data['request'] as Map<String, dynamic>
+              : <String, dynamic>{};
+          final requestId =
+              request['_id']?.toString() ?? request['id']?.toString();
 
-      if (!mounted) {
-        return;
-      }
-
-      setState(() {
-        request = data['request'] is Map<String, dynamic>
-            ? data['request'] as Map<String, dynamic>
-            : <String, dynamic>{};
-        quote = data['quote'] is Map<String, dynamic>
-            ? data['quote'] as Map<String, dynamic>
-            : quote;
-      });
-      showMessage('Airtime-to-cash request submitted.');
-    } on ApiException catch (error) {
-      showMessage(error.message);
-    } catch (_) {
-      showMessage('Unable to submit airtime-to-cash request.');
-    } finally {
-      if (mounted) {
-        setState(() {
-          isSubmitting = false;
-        });
-      }
-    }
+          return TransactionResultArguments(
+            isSuccess: true,
+            title: 'Request Submitted',
+            message:
+                'Your airtime-to-cash request has been submitted for review.',
+            details: [
+              ReceiptLineItem(label: 'Network', value: networkName ?? ''),
+              ReceiptLineItem(
+                  label: 'Phone', value: phoneController.text.trim()),
+              ReceiptLineItem(
+                  label: 'Amount',
+                  value: 'NGN ${amountController.text.trim()}'),
+              if (request['requestCode'] != null)
+                ReceiptLineItem(
+                  label: 'Request Code',
+                  value: request['requestCode'].toString(),
+                ),
+            ],
+            primaryActionLabel: requestId == null ? null : 'View Request',
+            primaryActionRoute:
+                requestId == null ? null : AppRoutes.airtimeToCashDetailView,
+            primaryActionArguments: requestId,
+          );
+        },
+      ),
+    );
   }
 
   void showMessage(String message) {
@@ -209,15 +234,6 @@ class _Airime2cashState extends State<Airtime2cash> {
                           'Rate: ${quote!['rate'] ?? ''}',
                         ],
                       ),
-                    if (request != null)
-                      ServiceResultCard(
-                        title: 'Request Submitted',
-                        lines: [
-                          'Code: ${request!['requestCode'] ?? ''}',
-                          'Status: ${request!['status'] ?? ''}',
-                          '${request!['instructions'] ?? ''}',
-                        ],
-                      ),
                     Row(
                       children: [
                         Expanded(
@@ -232,10 +248,9 @@ class _Airime2cashState extends State<Airtime2cash> {
                         const SizedBox(width: 10),
                         Expanded(
                           child: AppButton(
-                            onPressed: submitRequest,
-                            label: 'Submit',
+                            onPressed: reviewRequest,
+                            label: 'Review',
                             isText: true,
-                            isLoading: isSubmitting,
                             width: double.infinity,
                           ),
                         ),

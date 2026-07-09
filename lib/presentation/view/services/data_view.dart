@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:tranzgoo/data/services/api_exception.dart';
 import 'package:tranzgoo/data/services/tranzgoo_api_service.dart';
 import 'package:tranzgoo/presentation/view/services/service_form_widgets.dart';
+import 'package:tranzgoo/presentation/view/transactions/payment_flow_models.dart';
+import 'package:tranzgoo/presentation/view/transactions/transaction_detail_screen.dart';
+import 'package:tranzgoo/utils/routes/app_routes.dart';
 import 'package:tranzgoo/utils/widget/app_button.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 import 'package:tranzgoo/utils/widget/app_textfield.dart';
@@ -20,9 +23,7 @@ class _DataScreenState extends State<DataScreen> {
   List<Map<String, dynamic>> plans = [];
   String? selectedNetwork;
   String? selectedPlan;
-  String? resultMessage;
   bool isLoading = true;
-  bool isSubmitting = false;
   String? errorMessage;
 
   @override
@@ -98,46 +99,73 @@ class _DataScreenState extends State<DataScreen> {
     });
   }
 
-  Future<void> buyData() async {
+  Future<void> reviewData() async {
     if (selectedPlan == null || phoneController.text.trim().isEmpty) {
       showMessage('Please select a plan and enter a phone number.');
       return;
     }
 
-    setState(() {
-      isSubmitting = true;
-      resultMessage = null;
-    });
+    final plan = plans.firstWhere(
+      (item) => item['id']?.toString() == selectedPlan,
+      orElse: () => <String, dynamic>{},
+    );
+    final planName = plan['name']?.toString() ?? selectedPlan!;
+    final planAmount = plan['amount']?.toString() ?? '';
 
-    try {
-      final result = await _apiService.buyData(
-        planId: selectedPlan!,
-        phone: phoneController.text,
-      );
-      final wallet = result['wallet'];
-      final balance = wallet is Map ? wallet['balance']?.toString() : null;
+    Navigator.pushNamed(
+      context,
+      AppRoutes.paymentConfirmationView,
+      arguments: PaymentConfirmationArguments(
+        title: 'Confirm Data Purchase',
+        subtitle: 'Review the data plan and phone number before purchase.',
+        amountLabel: 'NGN $planAmount',
+        details: [
+          ReceiptLineItem(label: 'Plan', value: planName),
+          ReceiptLineItem(label: 'Phone', value: phoneController.text.trim()),
+        ],
+        onConfirm: () async {
+          final result = await _apiService.buyData(
+            planId: selectedPlan!,
+            phone: phoneController.text,
+          );
+          final transaction = result['transaction'] is Map<String, dynamic>
+              ? result['transaction'] as Map<String, dynamic>
+              : <String, dynamic>{};
+          final wallet = result['wallet'];
+          final balance = wallet is Map ? wallet['balance']?.toString() : null;
+          final transactionId =
+              transaction['_id']?.toString() ?? transaction['id']?.toString();
 
-      if (!mounted) {
-        return;
-      }
-
-      setState(() {
-        resultMessage = balance == null
-            ? 'Data purchase successful.'
-            : 'Data purchase successful. New balance: NGN $balance';
-      });
-      showMessage('Data purchase successful.');
-    } on ApiException catch (error) {
-      showMessage(error.message);
-    } catch (_) {
-      showMessage('Unable to complete data purchase.');
-    } finally {
-      if (mounted) {
-        setState(() {
-          isSubmitting = false;
-        });
-      }
-    }
+          return TransactionResultArguments(
+            isSuccess: true,
+            title: 'Data Purchase Successful',
+            message: balance == null
+                ? 'Your data purchase has been completed.'
+                : 'Your data purchase has been completed. New balance: NGN $balance',
+            details: [
+              ReceiptLineItem(label: 'Amount', value: 'NGN $planAmount'),
+              ReceiptLineItem(label: 'Plan', value: planName),
+              ReceiptLineItem(
+                  label: 'Phone', value: phoneController.text.trim()),
+              if (transaction['reference'] != null)
+                ReceiptLineItem(
+                  label: 'Reference',
+                  value: transaction['reference'].toString(),
+                ),
+            ],
+            primaryActionLabel: transactionId == null ? null : 'View Receipt',
+            primaryActionRoute:
+                transactionId == null ? null : AppRoutes.transactionDetailView,
+            primaryActionArguments: transactionId == null
+                ? null
+                : TransactionDetailArguments(
+                    id: transactionId,
+                    transaction: transaction,
+                  ),
+          );
+        },
+      ),
+    );
   }
 
   void showMessage(String message) {
@@ -195,16 +223,10 @@ class _DataScreenState extends State<DataScreen> {
                       keyboardType: TextInputType.phone,
                       icon: Image.asset('assets/icons/phoneIcon.png'),
                     ),
-                    if (resultMessage != null)
-                      ServiceResultCard(
-                        title: 'Completed',
-                        lines: [resultMessage!],
-                      ),
                     AppButton(
-                      onPressed: buyData,
-                      label: 'Buy Data',
+                      onPressed: reviewData,
+                      label: 'Review Data',
                       isText: true,
-                      isLoading: isSubmitting,
                       width: double.infinity,
                     ),
                   ],

@@ -113,6 +113,22 @@ class _LoginScreenState extends State<LoginScreen> {
                     isObscure: true,
                     icon: Image.asset('assets/icons/passwordIcon.png'),
                     hintText: 'Password'),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () => Navigator.pushNamed(
+                      context,
+                      AppRoutes.forgotPasswordView,
+                    ),
+                    child: Text(
+                      'Forgot password?',
+                      style: AppText.extraBold.copyWith(
+                        color: AppColors.primaryColor,
+                        letterSpacing: 0.09,
+                      ),
+                    ),
+                  ),
+                ),
                 const SizedBox(
                   height: 10,
                 ),

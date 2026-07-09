@@ -29,6 +29,28 @@ class TranzgooApiService {
     return _map(response, 'user');
   }
 
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmPassword,
+  }) async {
+    await _apiClient.post(
+      '/api/auth/change-password',
+      {
+        'currentPassword': currentPassword,
+        'newPassword': newPassword,
+        'confirmPassword': confirmPassword,
+      },
+      authenticated: true,
+    );
+  }
+
+  Future<Map<String, dynamic>> getSecurity() async {
+    final response =
+        await _apiClient.get('/api/user/security', authenticated: true);
+    return _map(response, 'security');
+  }
+
   Future<Map<String, dynamic>> getWallet() async {
     final response = await _apiClient.get('/api/wallet', authenticated: true);
     return _map(response, 'wallet');
@@ -77,6 +99,14 @@ class TranzgooApiService {
       authenticated: true,
     );
     return _list(response, 'transactions');
+  }
+
+  Future<Map<String, dynamic>> getTransaction(String id) async {
+    final response = await _apiClient.get(
+      '/api/transactions/${Uri.encodeComponent(id)}',
+      authenticated: true,
+    );
+    return _map(response, 'transaction');
   }
 
   Future<List<Map<String, dynamic>>> getServices() async {
@@ -287,6 +317,14 @@ class TranzgooApiService {
     return _data(response);
   }
 
+  Future<Map<String, dynamic>> getAirtimeToCashRequest(String id) async {
+    final response = await _apiClient.get(
+      '/api/services/airtime-to-cash/${Uri.encodeComponent(id)}',
+      authenticated: true,
+    );
+    return _map(response, 'request');
+  }
+
   Future<List<Map<String, dynamic>>> getNotifications() async {
     final response = await _apiClient.get(
       '/api/notifications',
@@ -301,6 +339,25 @@ class TranzgooApiService {
       {},
       authenticated: true,
     );
+  }
+
+  Future<Map<String, dynamic>> getNotificationPreferences() async {
+    final response = await _apiClient.get(
+      '/api/notifications/preferences',
+      authenticated: true,
+    );
+    return _map(response, 'preferences');
+  }
+
+  Future<Map<String, dynamic>> updateNotificationPreferences(
+    Map<String, bool> preferences,
+  ) async {
+    final response = await _apiClient.patch(
+      '/api/notifications/preferences',
+      preferences,
+      authenticated: true,
+    );
+    return _map(response, 'preferences');
   }
 
   Future<Map<String, dynamic>> getReferrals() async {

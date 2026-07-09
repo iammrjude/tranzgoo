@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:tranzgoo/data/services/api_exception.dart';
 import 'package:tranzgoo/data/services/tranzgoo_api_service.dart';
 import 'package:tranzgoo/presentation/view/services/service_form_widgets.dart';
+import 'package:tranzgoo/presentation/view/transactions/payment_flow_models.dart';
+import 'package:tranzgoo/presentation/view/transactions/transaction_detail_screen.dart';
+import 'package:tranzgoo/utils/routes/app_routes.dart';
 import 'package:tranzgoo/utils/widget/app_button.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 
@@ -16,10 +19,7 @@ class _EducationScreenState extends State<EducationScreen> {
   final TranzgooApiService _apiService = TranzgooApiService();
   List<Map<String, dynamic>> products = [];
   String? selectedProduct;
-  String? pin;
-  String? resultMessage;
   bool isLoading = true;
-  bool isSubmitting = false;
   String? errorMessage;
 
   @override
@@ -62,45 +62,68 @@ class _EducationScreenState extends State<EducationScreen> {
     }
   }
 
-  Future<void> buyProduct() async {
+  Future<void> reviewProduct() async {
     if (selectedProduct == null) {
       showMessage('Please select an education product.');
       return;
     }
 
-    setState(() {
-      isSubmitting = true;
-      pin = null;
-      resultMessage = null;
-    });
+    final product = products.firstWhere(
+      (item) => item['id']?.toString() == selectedProduct,
+      orElse: () => <String, dynamic>{},
+    );
+    final productName = product['name']?.toString() ?? selectedProduct!;
+    final productAmount = product['amount']?.toString() ?? '';
 
-    try {
-      final result = await _apiService.buyEducationProduct(selectedProduct!);
-      final wallet = result['wallet'];
-      final balance = wallet is Map ? wallet['balance']?.toString() : null;
+    Navigator.pushNamed(
+      context,
+      AppRoutes.paymentConfirmationView,
+      arguments: PaymentConfirmationArguments(
+        title: 'Confirm Education Purchase',
+        subtitle: 'Review the education product before purchase.',
+        amountLabel: 'NGN $productAmount',
+        details: [ReceiptLineItem(label: 'Product', value: productName)],
+        onConfirm: () async {
+          final result =
+              await _apiService.buyEducationProduct(selectedProduct!);
+          final transaction = result['transaction'] is Map<String, dynamic>
+              ? result['transaction'] as Map<String, dynamic>
+              : <String, dynamic>{};
+          final wallet = result['wallet'];
+          final balance = wallet is Map ? wallet['balance']?.toString() : null;
+          final pin = result['pin']?.toString();
+          final transactionId =
+              transaction['_id']?.toString() ?? transaction['id']?.toString();
 
-      if (!mounted) {
-        return;
-      }
-
-      setState(() {
-        pin = result['pin']?.toString();
-        resultMessage = balance == null
-            ? 'Education product purchase successful.'
-            : 'Education product purchase successful. New balance: NGN $balance';
-      });
-      showMessage('Education product purchase successful.');
-    } on ApiException catch (error) {
-      showMessage(error.message);
-    } catch (_) {
-      showMessage('Unable to complete education purchase.');
-    } finally {
-      if (mounted) {
-        setState(() {
-          isSubmitting = false;
-        });
-      }
-    }
+          return TransactionResultArguments(
+            isSuccess: true,
+            title: 'Education Purchase Successful',
+            message: balance == null
+                ? 'Your education product has been purchased.'
+                : 'Your education product has been purchased. New balance: NGN $balance',
+            details: [
+              ReceiptLineItem(label: 'Amount', value: 'NGN $productAmount'),
+              ReceiptLineItem(label: 'Product', value: productName),
+              if (pin != null) ReceiptLineItem(label: 'PIN', value: pin),
+              if (transaction['reference'] != null)
+                ReceiptLineItem(
+                  label: 'Reference',
+                  value: transaction['reference'].toString(),
+                ),
+            ],
+            primaryActionLabel: transactionId == null ? null : 'View Receipt',
+            primaryActionRoute:
+                transactionId == null ? null : AppRoutes.transactionDetailView,
+            primaryActionArguments: transactionId == null
+                ? null
+                : TransactionDetailArguments(
+                    id: transactionId,
+                    transaction: transaction,
+                  ),
+          );
+        },
+      ),
+    );
   }
 
   void showMessage(String message) {
@@ -141,19 +164,10 @@ class _EducationScreenState extends State<EducationScreen> {
                         });
                       },
                     ),
-                    if (pin != null || resultMessage != null)
-                      ServiceResultCard(
-                        title: 'Completed',
-                        lines: [
-                          if (pin != null) 'PIN: $pin',
-                          if (resultMessage != null) resultMessage!,
-                        ],
-                      ),
                     AppButton(
-                      onPressed: buyProduct,
-                      label: 'Buy Product',
+                      onPressed: reviewProduct,
+                      label: 'Review Product',
                       isText: true,
-                      isLoading: isSubmitting,
                       width: double.infinity,
                     ),
                   ],

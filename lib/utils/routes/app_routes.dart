@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tranzgoo/presentation/view/auth_view/create_account_screen.dart';
+import 'package:tranzgoo/presentation/view/auth_view/forgot_password_screen.dart';
 import 'package:tranzgoo/presentation/view/auth_view/login_screen.dart';
 import 'package:tranzgoo/presentation/view/auth_view/register_screen.dart';
+import 'package:tranzgoo/presentation/view/auth_view/reset_password_screen.dart';
 import 'package:tranzgoo/presentation/view/auth_view/splash_screen.dart';
 import 'package:tranzgoo/presentation/view/auth_view/welcome_screen.dart';
 import 'package:tranzgoo/presentation/view/history/history_view.dart';
@@ -9,11 +11,16 @@ import 'package:tranzgoo/presentation/view/home_view/base_screen.dart';
 import 'package:tranzgoo/presentation/view/home_view/fund_account.dart';
 import 'package:tranzgoo/presentation/view/home_view/home_screen.dart';
 import 'package:tranzgoo/presentation/view/home_view/send_screen.dart';
+import 'package:tranzgoo/presentation/view/profile/change_password_view.dart';
 import 'package:tranzgoo/presentation/view/profile/edit_profile_view.dart';
 import 'package:tranzgoo/presentation/view/profile/legal_view.dart';
+import 'package:tranzgoo/presentation/view/profile/notification_preferences_view.dart';
 import 'package:tranzgoo/presentation/view/profile/notifications_view.dart';
 import 'package:tranzgoo/presentation/view/profile/referrals_view.dart';
+import 'package:tranzgoo/presentation/view/profile/security_view.dart';
+import 'package:tranzgoo/presentation/view/profile/settings_view.dart';
 import 'package:tranzgoo/presentation/view/profile/support_view.dart';
+import 'package:tranzgoo/presentation/view/services/airtime_to_cash_detail_screen.dart';
 import 'package:tranzgoo/presentation/view/services/airtime2cash_view.dart';
 import 'package:tranzgoo/presentation/view/services/airtime_view.dart';
 import 'package:tranzgoo/presentation/view/services/cable_view.dart';
@@ -21,6 +28,9 @@ import 'package:tranzgoo/presentation/view/services/data_view.dart';
 import 'package:tranzgoo/presentation/view/services/education_view.dart';
 import 'package:tranzgoo/presentation/view/services/electricity_view.dart';
 import 'package:tranzgoo/presentation/view/services/services_view.dart';
+import 'package:tranzgoo/presentation/view/transactions/payment_confirmation_screen.dart';
+import 'package:tranzgoo/presentation/view/transactions/transaction_detail_screen.dart';
+import 'package:tranzgoo/presentation/view/transactions/transaction_result_screen.dart';
 
 class AppRoutes {
   static const String splashView = '/splashView';
@@ -29,6 +39,8 @@ class AppRoutes {
   static const String loginView = '/loginView';
   static const String welcomeView = '/welcomeView';
   static const String createAccountView = '/createAccountView';
+  static const String forgotPasswordView = '/forgotPasswordView';
+  static const String resetPasswordView = '/resetPasswordView';
   static const String baseView = '/baseView';
   static const String fundAccountView = '/fundAccountView';
   static const String sendView = '/sendView';
@@ -45,6 +57,15 @@ class AppRoutes {
   static const String referralsView = '/referralsView';
   static const String supportView = '/supportView';
   static const String legalView = '/legalView';
+  static const String settingsView = '/settingsView';
+  static const String securityView = '/securityView';
+  static const String changePasswordView = '/changePasswordView';
+  static const String notificationPreferencesView =
+      '/notificationPreferencesView';
+  static const String paymentConfirmationView = '/paymentConfirmationView';
+  static const String transactionResultView = '/transactionResultView';
+  static const String transactionDetailView = '/transactionDetailView';
+  static const String airtimeToCashDetailView = '/airtimeToCashDetailView';
 
   static Map<String, WidgetBuilder> getRoutes() {
     return {
@@ -54,6 +75,8 @@ class AppRoutes {
       AppRoutes.loginView: (_) => const LoginScreen(),
       AppRoutes.welcomeView: (_) => const WelcomeScreen(),
       AppRoutes.createAccountView: (_) => const CreateAccountScreen(),
+      AppRoutes.forgotPasswordView: (_) => const ForgotPasswordScreen(),
+      AppRoutes.resetPasswordView: (_) => const ResetPasswordScreen(),
       AppRoutes.baseView: (_) => const BaseView(),
       AppRoutes.fundAccountView: (_) => const FundAccount(),
       AppRoutes.sendView: (_) => const SendView(),
@@ -70,6 +93,17 @@ class AppRoutes {
       AppRoutes.referralsView: (_) => const ReferralsScreen(),
       AppRoutes.supportView: (_) => const SupportScreen(),
       AppRoutes.legalView: (_) => const LegalScreen(),
+      AppRoutes.settingsView: (_) => const SettingsScreen(),
+      AppRoutes.securityView: (_) => const SecurityScreen(),
+      AppRoutes.changePasswordView: (_) => const ChangePasswordScreen(),
+      AppRoutes.notificationPreferencesView: (_) =>
+          const NotificationPreferencesScreen(),
+      AppRoutes.paymentConfirmationView: (_) =>
+          const PaymentConfirmationScreen(),
+      AppRoutes.transactionResultView: (_) => const TransactionResultScreen(),
+      AppRoutes.transactionDetailView: (_) => const TransactionDetailScreen(),
+      AppRoutes.airtimeToCashDetailView: (_) =>
+          const AirtimeToCashDetailScreen(),
     };
   }
 }

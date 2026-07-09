@@ -3,6 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tranzgoo/data/services/api_exception.dart';
 import 'package:tranzgoo/data/services/tranzgoo_api_service.dart';
 import 'package:tranzgoo/presentation/view/services/service_form_widgets.dart';
+import 'package:tranzgoo/presentation/view/transactions/payment_flow_models.dart';
+import 'package:tranzgoo/presentation/view/transactions/transaction_detail_screen.dart';
+import 'package:tranzgoo/utils/routes/app_routes.dart';
 import 'package:tranzgoo/utils/theme/app_colors.dart';
 import 'package:tranzgoo/utils/theme/app_style.dart';
 import 'package:tranzgoo/utils/widget/app_button.dart';
@@ -21,9 +24,7 @@ class _SendViewState extends State<SendView> {
   final TextEditingController amount = TextEditingController();
   final TextEditingController note = TextEditingController();
   Map<String, dynamic>? receiver;
-  String? resultMessage;
   bool isLookingUp = false;
-  bool isSending = false;
 
   @override
   void dispose() {
@@ -42,7 +43,6 @@ class _SendViewState extends State<SendView> {
     setState(() {
       isLookingUp = true;
       receiver = null;
-      resultMessage = null;
     });
 
     try {
@@ -68,47 +68,73 @@ class _SendViewState extends State<SendView> {
     }
   }
 
-  Future<void> sendMoney() async {
+  Future<void> confirmTransfer() async {
     if (tranzgoId.text.trim().isEmpty || amount.text.trim().isEmpty) {
       showMessage('Please enter receiver ID and amount.');
       return;
     }
 
-    setState(() {
-      isSending = true;
-      resultMessage = null;
-    });
+    Navigator.pushNamed(
+      context,
+      AppRoutes.paymentConfirmationView,
+      arguments: PaymentConfirmationArguments(
+        title: 'Confirm Transfer',
+        subtitle: 'Review the receiver and amount before sending money.',
+        amountLabel: 'NGN ${amount.text.trim()}',
+        details: [
+          ReceiptLineItem(label: 'Receiver ID', value: tranzgoId.text.trim()),
+          if (receiver != null)
+            ReceiptLineItem(
+              label: 'Receiver',
+              value: receiver!['fullName']?.toString() ?? '',
+            ),
+          if (note.text.trim().isNotEmpty)
+            ReceiptLineItem(label: 'Note', value: note.text.trim()),
+        ],
+        onConfirm: () async {
+          final result = await _apiService.transfer(
+            receiverTranzgoId: tranzgoId.text,
+            amount: amount.text,
+            note: note.text,
+          );
+          final transaction = result['transaction'] is Map<String, dynamic>
+              ? result['transaction'] as Map<String, dynamic>
+              : <String, dynamic>{};
+          final wallet = result['wallet'];
+          final balance = wallet is Map ? wallet['balance']?.toString() : null;
+          final transactionId =
+              transaction['_id']?.toString() ?? transaction['id']?.toString();
 
-    try {
-      final result = await _apiService.transfer(
-        receiverTranzgoId: tranzgoId.text,
-        amount: amount.text,
-        note: note.text,
-      );
-      final wallet = result['wallet'];
-      final balance = wallet is Map ? wallet['balance']?.toString() : null;
-
-      if (!mounted) {
-        return;
-      }
-
-      setState(() {
-        resultMessage = balance == null
-            ? 'Transfer successful.'
-            : 'Transfer successful. New balance: NGN $balance';
-      });
-      showMessage('Transfer successful.');
-    } on ApiException catch (error) {
-      showMessage(error.message);
-    } catch (_) {
-      showMessage('Unable to complete transfer.');
-    } finally {
-      if (mounted) {
-        setState(() {
-          isSending = false;
-        });
-      }
-    }
+          return TransactionResultArguments(
+            isSuccess: true,
+            title: 'Transfer Successful',
+            message: balance == null
+                ? 'Your transfer has been completed.'
+                : 'Your transfer has been completed. New balance: NGN $balance',
+            details: [
+              ReceiptLineItem(
+                  label: 'Amount', value: 'NGN ${amount.text.trim()}'),
+              ReceiptLineItem(
+                  label: 'Receiver ID', value: tranzgoId.text.trim()),
+              if (transaction['reference'] != null)
+                ReceiptLineItem(
+                  label: 'Reference',
+                  value: transaction['reference'].toString(),
+                ),
+            ],
+            primaryActionLabel: transactionId == null ? null : 'View Receipt',
+            primaryActionRoute:
+                transactionId == null ? null : AppRoutes.transactionDetailView,
+            primaryActionArguments: transactionId == null
+                ? null
+                : TransactionDetailArguments(
+                    id: transactionId,
+                    transaction: transaction,
+                  ),
+          );
+        },
+      ),
+    );
   }
 
   void showMessage(String message) {
@@ -187,17 +213,11 @@ class _SendViewState extends State<SendView> {
                 hintText: 'Note (optional)',
                 width: 254.w,
               ),
-              if (resultMessage != null)
-                ServiceResultCard(
-                  title: 'Completed',
-                  lines: [resultMessage!],
-                ),
               const SizedBox(height: 20),
               AppButton(
-                onPressed: sendMoney,
-                label: 'Send',
+                onPressed: confirmTransfer,
+                label: 'Review Transfer',
                 isText: true,
-                isLoading: isSending,
               )
             ],
           ),

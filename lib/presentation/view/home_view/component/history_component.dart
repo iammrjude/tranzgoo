@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:tranzgoo/presentation/view/transactions/transaction_detail_screen.dart';
+import 'package:tranzgoo/utils/routes/app_routes.dart';
 import 'package:tranzgoo/utils/theme/app_colors.dart';
 import 'package:tranzgoo/utils/theme/app_style.dart';
+import 'package:tranzgoo/utils/widget/app_clickable_surface.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 
 class HistoryComponent extends StatelessWidget {
@@ -63,7 +66,29 @@ class TransactionTile extends StatelessWidget {
         ? '--'
         : '${monthLabel(createdAt.month)}\n${createdAt.day.toString().padLeft(2, '0')}';
 
-    return AppInfoCard(
+    return AppClickableSurface(
+      onTap: () {
+        final id =
+            transaction['_id']?.toString() ?? transaction['id']?.toString();
+
+        if (id == null || id.isEmpty) {
+          return;
+        }
+
+        Navigator.pushNamed(
+          context,
+          AppRoutes.transactionDetailView,
+          arguments: TransactionDetailArguments(
+            id: id,
+            transaction: transaction,
+          ),
+        );
+      },
+      semanticLabel: 'View transaction receipt',
+      color: AppColors.whiteColor,
+      borderRadius: BorderRadius.circular(10),
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(14),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

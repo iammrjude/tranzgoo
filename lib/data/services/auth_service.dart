@@ -52,6 +52,31 @@ class AuthService {
     return session;
   }
 
+  Future<Map<String, dynamic>> forgotPassword(String email) async {
+    final response = await _apiClient.post(
+      '/api/auth/forgot-password',
+      {'email': email.trim()},
+    );
+
+    final data = response['data'];
+    return data is Map<String, dynamic> ? data : <String, dynamic>{};
+  }
+
+  Future<void> resetPassword({
+    required String token,
+    required String newPassword,
+    required String confirmPassword,
+  }) async {
+    await _apiClient.post(
+      '/api/auth/reset-password',
+      {
+        'token': token.trim(),
+        'newPassword': newPassword,
+        'confirmPassword': confirmPassword,
+      },
+    );
+  }
+
   AuthSession _sessionFromResponse(Map<String, dynamic> response) {
     final data = response['data'];
 

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:tranzgoo/data/services/api_exception.dart';
 import 'package:tranzgoo/data/services/tranzgoo_api_service.dart';
 import 'package:tranzgoo/presentation/view/services/service_form_widgets.dart';
+import 'package:tranzgoo/presentation/view/transactions/payment_flow_models.dart';
+import 'package:tranzgoo/presentation/view/transactions/transaction_detail_screen.dart';
+import 'package:tranzgoo/utils/routes/app_routes.dart';
 import 'package:tranzgoo/utils/widget/app_button.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 import 'package:tranzgoo/utils/widget/app_textfield.dart';
@@ -19,9 +22,7 @@ class _AirtimeScreenState extends State<AirtimeScreen> {
   final TextEditingController amountController = TextEditingController();
   List<Map<String, dynamic>> networks = [];
   String? selectedNetwork;
-  String? resultMessage;
   bool isLoading = true;
-  bool isSubmitting = false;
   String? errorMessage;
 
   @override
@@ -71,7 +72,7 @@ class _AirtimeScreenState extends State<AirtimeScreen> {
     }
   }
 
-  Future<void> buyAirtime() async {
+  Future<void> reviewAirtime() async {
     if (selectedNetwork == null ||
         phoneController.text.trim().isEmpty ||
         amountController.text.trim().isEmpty) {
@@ -79,41 +80,70 @@ class _AirtimeScreenState extends State<AirtimeScreen> {
       return;
     }
 
-    setState(() {
-      isSubmitting = true;
-      resultMessage = null;
-    });
+    final networkName = networks
+        .firstWhere(
+          (network) => network['id']?.toString() == selectedNetwork,
+          orElse: () => {'name': selectedNetwork},
+        )['name']
+        ?.toString();
 
-    try {
-      final result = await _apiService.buyAirtime(
-        network: selectedNetwork!,
-        phone: phoneController.text,
-        amount: amountController.text,
-      );
-      final wallet = result['wallet'];
-      final balance = wallet is Map ? wallet['balance']?.toString() : null;
+    Navigator.pushNamed(
+      context,
+      AppRoutes.paymentConfirmationView,
+      arguments: PaymentConfirmationArguments(
+        title: 'Confirm Airtime Purchase',
+        subtitle: 'Review the phone number and amount before purchase.',
+        amountLabel: 'NGN ${amountController.text.trim()}',
+        details: [
+          ReceiptLineItem(label: 'Network', value: networkName ?? ''),
+          ReceiptLineItem(label: 'Phone', value: phoneController.text.trim()),
+        ],
+        onConfirm: () async {
+          final result = await _apiService.buyAirtime(
+            network: selectedNetwork!,
+            phone: phoneController.text,
+            amount: amountController.text,
+          );
+          final transaction = result['transaction'] is Map<String, dynamic>
+              ? result['transaction'] as Map<String, dynamic>
+              : <String, dynamic>{};
+          final wallet = result['wallet'];
+          final balance = wallet is Map ? wallet['balance']?.toString() : null;
+          final transactionId =
+              transaction['_id']?.toString() ?? transaction['id']?.toString();
 
-      if (!mounted) {
-        return;
-      }
-
-      setState(() {
-        resultMessage = balance == null
-            ? 'Airtime purchase successful.'
-            : 'Airtime purchase successful. New balance: NGN $balance';
-      });
-      showMessage('Airtime purchase successful.');
-    } on ApiException catch (error) {
-      showMessage(error.message);
-    } catch (_) {
-      showMessage('Unable to complete airtime purchase.');
-    } finally {
-      if (mounted) {
-        setState(() {
-          isSubmitting = false;
-        });
-      }
-    }
+          return TransactionResultArguments(
+            isSuccess: true,
+            title: 'Airtime Purchase Successful',
+            message: balance == null
+                ? 'Your airtime purchase has been completed.'
+                : 'Your airtime purchase has been completed. New balance: NGN $balance',
+            details: [
+              ReceiptLineItem(
+                  label: 'Amount',
+                  value: 'NGN ${amountController.text.trim()}'),
+              ReceiptLineItem(label: 'Network', value: networkName ?? ''),
+              ReceiptLineItem(
+                  label: 'Phone', value: phoneController.text.trim()),
+              if (transaction['reference'] != null)
+                ReceiptLineItem(
+                  label: 'Reference',
+                  value: transaction['reference'].toString(),
+                ),
+            ],
+            primaryActionLabel: transactionId == null ? null : 'View Receipt',
+            primaryActionRoute:
+                transactionId == null ? null : AppRoutes.transactionDetailView,
+            primaryActionArguments: transactionId == null
+                ? null
+                : TransactionDetailArguments(
+                    id: transactionId,
+                    transaction: transaction,
+                  ),
+          );
+        },
+      ),
+    );
   }
 
   void showMessage(String message) {
@@ -162,16 +192,10 @@ class _AirtimeScreenState extends State<AirtimeScreen> {
                       keyboardType: TextInputType.number,
                       icon: const Icon(Icons.payments),
                     ),
-                    if (resultMessage != null)
-                      ServiceResultCard(
-                        title: 'Completed',
-                        lines: [resultMessage!],
-                      ),
                     AppButton(
-                      onPressed: buyAirtime,
-                      label: 'Buy Airtime',
+                      onPressed: reviewAirtime,
+                      label: 'Review Airtime',
                       isText: true,
-                      isLoading: isSubmitting,
                       width: double.infinity,
                     ),
                   ],

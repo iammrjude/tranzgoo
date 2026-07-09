@@ -217,6 +217,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Navigator.pushNamed(context, AppRoutes.referralsView),
             ),
             settingsWidget(
+              child: Image.asset('assets/icons/Vector.png'),
+              title: 'Settings',
+              subTitle: 'Security, password, notifications',
+              onTap: () => Navigator.pushNamed(context, AppRoutes.settingsView),
+            ),
+            settingsWidget(
               child: Image.asset('assets/icons/bx_support.png'),
               title: 'Support',
               subTitle: 'Contact us',

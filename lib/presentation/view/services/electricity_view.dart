@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:tranzgoo/data/services/api_exception.dart';
 import 'package:tranzgoo/data/services/tranzgoo_api_service.dart';
 import 'package:tranzgoo/presentation/view/services/service_form_widgets.dart';
+import 'package:tranzgoo/presentation/view/transactions/payment_flow_models.dart';
+import 'package:tranzgoo/presentation/view/transactions/transaction_detail_screen.dart';
+import 'package:tranzgoo/utils/routes/app_routes.dart';
 import 'package:tranzgoo/utils/widget/app_button.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 import 'package:tranzgoo/utils/widget/app_textfield.dart';
@@ -21,11 +24,8 @@ class _ElectricityScreenState extends State<ElectricityScreen> {
   String? selectedProvider;
   String meterType = 'prepaid';
   Map<String, dynamic>? customer;
-  String? token;
-  String? resultMessage;
   bool isLoading = true;
   bool isValidating = false;
-  bool isSubmitting = false;
   String? errorMessage;
 
   @override
@@ -112,7 +112,7 @@ class _ElectricityScreenState extends State<ElectricityScreen> {
     }
   }
 
-  Future<void> buyElectricity() async {
+  Future<void> reviewElectricity() async {
     if (selectedProvider == null ||
         meterController.text.trim().isEmpty ||
         amountController.text.trim().isEmpty) {
@@ -120,44 +120,79 @@ class _ElectricityScreenState extends State<ElectricityScreen> {
       return;
     }
 
-    setState(() {
-      isSubmitting = true;
-      token = null;
-      resultMessage = null;
-    });
+    final providerName = providers
+        .firstWhere(
+          (item) => item['id']?.toString() == selectedProvider,
+          orElse: () => {'name': selectedProvider},
+        )['name']
+        ?.toString();
 
-    try {
-      final result = await _apiService.buyElectricity(
-        provider: selectedProvider!,
-        meterNumber: meterController.text,
-        meterType: meterType,
-        amount: amountController.text,
-      );
-      final wallet = result['wallet'];
-      final balance = wallet is Map ? wallet['balance']?.toString() : null;
+    Navigator.pushNamed(
+      context,
+      AppRoutes.paymentConfirmationView,
+      arguments: PaymentConfirmationArguments(
+        title: 'Confirm Electricity Purchase',
+        subtitle: 'Review the meter and amount before payment.',
+        amountLabel: 'NGN ${amountController.text.trim()}',
+        details: [
+          ReceiptLineItem(label: 'Provider', value: providerName ?? ''),
+          ReceiptLineItem(label: 'Meter', value: meterController.text.trim()),
+          ReceiptLineItem(label: 'Meter Type', value: meterType),
+          if (customer != null)
+            ReceiptLineItem(
+              label: 'Customer',
+              value: customer!['name']?.toString() ?? '',
+            ),
+        ],
+        onConfirm: () async {
+          final result = await _apiService.buyElectricity(
+            provider: selectedProvider!,
+            meterNumber: meterController.text,
+            meterType: meterType,
+            amount: amountController.text,
+          );
+          final transaction = result['transaction'] is Map<String, dynamic>
+              ? result['transaction'] as Map<String, dynamic>
+              : <String, dynamic>{};
+          final wallet = result['wallet'];
+          final balance = wallet is Map ? wallet['balance']?.toString() : null;
+          final token = result['token']?.toString();
+          final transactionId =
+              transaction['_id']?.toString() ?? transaction['id']?.toString();
 
-      if (!mounted) {
-        return;
-      }
-
-      setState(() {
-        token = result['token']?.toString();
-        resultMessage = balance == null
-            ? 'Electricity purchase successful.'
-            : 'Electricity purchase successful. New balance: NGN $balance';
-      });
-      showMessage('Electricity purchase successful.');
-    } on ApiException catch (error) {
-      showMessage(error.message);
-    } catch (_) {
-      showMessage('Unable to complete electricity purchase.');
-    } finally {
-      if (mounted) {
-        setState(() {
-          isSubmitting = false;
-        });
-      }
-    }
+          return TransactionResultArguments(
+            isSuccess: true,
+            title: 'Electricity Purchase Successful',
+            message: balance == null
+                ? 'Your electricity purchase has been completed.'
+                : 'Your electricity purchase has been completed. New balance: NGN $balance',
+            details: [
+              ReceiptLineItem(
+                  label: 'Amount',
+                  value: 'NGN ${amountController.text.trim()}'),
+              ReceiptLineItem(label: 'Provider', value: providerName ?? ''),
+              ReceiptLineItem(
+                  label: 'Meter', value: meterController.text.trim()),
+              if (token != null) ReceiptLineItem(label: 'Token', value: token),
+              if (transaction['reference'] != null)
+                ReceiptLineItem(
+                  label: 'Reference',
+                  value: transaction['reference'].toString(),
+                ),
+            ],
+            primaryActionLabel: transactionId == null ? null : 'View Receipt',
+            primaryActionRoute:
+                transactionId == null ? null : AppRoutes.transactionDetailView,
+            primaryActionArguments: transactionId == null
+                ? null
+                : TransactionDetailArguments(
+                    id: transactionId,
+                    transaction: transaction,
+                  ),
+          );
+        },
+      ),
+    );
   }
 
   void showMessage(String message) {
@@ -234,14 +269,6 @@ class _ElectricityScreenState extends State<ElectricityScreen> {
                           'Meter: ${customer!['meterNumber'] ?? ''}',
                         ],
                       ),
-                    if (token != null || resultMessage != null)
-                      ServiceResultCard(
-                        title: 'Completed',
-                        lines: [
-                          if (token != null) 'Token: $token',
-                          if (resultMessage != null) resultMessage!,
-                        ],
-                      ),
                     Row(
                       children: [
                         Expanded(
@@ -256,10 +283,9 @@ class _ElectricityScreenState extends State<ElectricityScreen> {
                         const SizedBox(width: 10),
                         Expanded(
                           child: AppButton(
-                            onPressed: buyElectricity,
-                            label: 'Pay',
+                            onPressed: reviewElectricity,
+                            label: 'Review',
                             isText: true,
-                            isLoading: isSubmitting,
                             width: double.infinity,
                           ),
                         ),
