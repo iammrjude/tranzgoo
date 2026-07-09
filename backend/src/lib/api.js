@@ -17,6 +17,12 @@ function sendJson(res, statusCode, payload) {
   res.end(JSON.stringify(payload));
 }
 
+function sendHtml(res, statusCode, html) {
+  res.statusCode = statusCode;
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.end(html);
+}
+
 function sendSuccess(res, statusCode, data, message) {
   sendJson(res, statusCode, {
     success: true,
@@ -87,6 +93,7 @@ function withApi(handler, options = {}) {
 module.exports = {
   readJsonBody,
   sendError,
+  sendHtml,
   sendJson,
   sendSuccess,
   setCorsHeaders,

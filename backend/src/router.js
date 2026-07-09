@@ -1,6 +1,11 @@
 const { sendError, sendJson, setCorsHeaders } = require('./lib/api');
 
 const routeDefinitions = [
+  ['/', require('../routes')],
+  ['/home', require('../routes/home')],
+  ['/docs', require('../routes/docs')],
+  ['/openapi.json', require('../routes/openapi')],
+
   ['/health', require('../routes/health')],
   ['/legal', require('../routes/legal')],
 

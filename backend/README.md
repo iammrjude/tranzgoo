@@ -25,6 +25,7 @@ The service purchase endpoints currently simulate purchases by debiting the user
 api/[...path].js    One Vercel Serverless Function entrypoint
 routes/             Internal route handlers kept as separate files
 src/router.js       Dispatches /api/* requests to the right handler
+src/openapi.js      OpenAPI document used by Swagger UI
 ```
 
 This keeps the code organized across 35 handler files while Vercel only counts one deployed Serverless Function.
@@ -57,7 +58,10 @@ npm run dev
 The local server serves the API at:
 
 ```text
+http://localhost:3000/
 http://localhost:3000/api/health
+http://localhost:3000/api/docs
+http://localhost:3000/api/openapi.json
 ```
 
 Validate the route setup:
@@ -104,6 +108,15 @@ Useful official docs:
 - MongoDB Atlas free cluster: <https://www.mongodb.com/docs/atlas/tutorial/deploy-free-tier-cluster>
 
 ## Main Routes
+
+### Status And Docs
+
+```text
+GET /                         HTML API status page
+GET /api/health               JSON health check
+GET /api/docs                 Swagger UI documentation
+GET /api/openapi.json         Raw OpenAPI document
+```
 
 ### Auth
 
