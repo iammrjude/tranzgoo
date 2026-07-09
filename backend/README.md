@@ -22,7 +22,7 @@ The service purchase endpoints currently simulate purchases by debiting the user
 ## Project Structure
 
 ```text
-api/[...path].js    One Vercel Serverless Function entrypoint
+api/index.js        One Vercel Serverless Function entrypoint
 routes/             Internal route handlers kept as separate files
 src/router.js       Dispatches /api/* requests to the right handler
 src/openapi.js      OpenAPI document used by Swagger UI

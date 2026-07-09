@@ -1,0 +1,64 @@
+import 'package:tranzgoo/data/models/auth_session.dart';
+import 'package:tranzgoo/data/services/api_client.dart';
+import 'package:tranzgoo/data/services/session_storage.dart';
+
+class AuthService {
+  final ApiClient _apiClient;
+  final SessionStorage _sessionStorage;
+
+  AuthService({
+    ApiClient? apiClient,
+    SessionStorage? sessionStorage,
+  })  : _apiClient = apiClient ?? ApiClient(),
+        _sessionStorage = sessionStorage ?? SessionStorage();
+
+  Future<AuthSession> login({
+    required String email,
+    required String password,
+  }) async {
+    final response = await _apiClient.post(
+      '/api/auth/login',
+      {
+        'email': email.trim(),
+        'password': password,
+      },
+    );
+
+    final session = _sessionFromResponse(response);
+    await _sessionStorage.saveSession(session);
+    return session;
+  }
+
+  Future<AuthSession> register({
+    required String fullName,
+    required String email,
+    required String phone,
+    required String password,
+    required String confirmPassword,
+  }) async {
+    final response = await _apiClient.post(
+      '/api/auth/register',
+      {
+        'fullName': fullName.trim(),
+        'email': email.trim(),
+        'phone': phone.trim(),
+        'password': password,
+        'confirmPassword': confirmPassword,
+      },
+    );
+
+    final session = _sessionFromResponse(response);
+    await _sessionStorage.saveSession(session);
+    return session;
+  }
+
+  AuthSession _sessionFromResponse(Map<String, dynamic> response) {
+    final data = response['data'];
+
+    if (data is! Map<String, dynamic>) {
+      throw const FormatException('The server did not return session details.');
+    }
+
+    return AuthSession.fromJson(data);
+  }
+}

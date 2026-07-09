@@ -29,7 +29,7 @@ class AppTextField extends StatefulWidget {
 }
 
 class _AppTextFieldState extends State<AppTextField> {
-  bool isPassword = false;
+  bool isPasswordVisible = false;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -42,7 +42,7 @@ class _AppTextFieldState extends State<AppTextField> {
         controller: widget.controller,
         textAlign: widget.textCenter ? TextAlign.center : TextAlign.start,
         textAlignVertical: TextAlignVertical.bottom,
-        obscureText: widget.isObscure ? isPassword : !isPassword,
+        obscureText: widget.isObscure && !isPasswordVisible,
         validator: (e) {
           return widget.validate != null ? widget.validate!(e!) : null;
         },
@@ -69,11 +69,11 @@ class _AppTextFieldState extends State<AppTextField> {
                   onPressed: () {
                     setState(
                       () {
-                        isPassword = !isPassword;
+                        isPasswordVisible = !isPasswordVisible;
                       },
                     );
                   },
-                  icon: isPassword
+                  icon: isPasswordVisible
                       ? const Icon(
                           Icons.visibility_off,
                           color: AppColors.primaryColor,

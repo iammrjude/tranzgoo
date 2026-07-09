@@ -96,12 +96,19 @@ const routes = routeDefinitions.map(compileRoute);
 function getApiPath(req) {
   const host = req.headers.host || 'localhost';
   const url = new URL(req.url || '/', `http://${host}`);
+  const rewrittenPath = url.searchParams.get('path');
   let pathname = url.pathname;
 
-  if (pathname === '/api') {
+  if (rewrittenPath !== null) {
+    pathname = rewrittenPath ? `/${rewrittenPath}` : '/';
+  } else if (pathname === '/api') {
     pathname = '/';
   } else if (pathname.startsWith('/api/')) {
     pathname = pathname.slice('/api'.length);
+  }
+
+  if (pathname === '/index') {
+    pathname = '/';
   }
 
   if (pathname.length > 1 && pathname.endsWith('/')) {
@@ -120,6 +127,8 @@ function getQuery(req, url, params) {
   for (const [key, value] of url.searchParams.entries()) {
     query[key] = value;
   }
+
+  delete query.path;
 
   return { ...query, ...params };
 }

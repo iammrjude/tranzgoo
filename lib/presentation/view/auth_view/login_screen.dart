@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:tranzgoo/data/services/api_exception.dart';
+import 'package:tranzgoo/data/services/auth_service.dart';
+import 'package:tranzgoo/utils/routes/app_routes.dart';
 import 'package:tranzgoo/utils/theme/app_colors.dart';
 import 'package:tranzgoo/utils/theme/app_style.dart';
 import 'package:tranzgoo/utils/widget/app_button.dart';
@@ -13,8 +16,71 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  final AuthService _authService = AuthService();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  bool isLoading = false;
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> login() async {
+    final email = emailController.text.trim();
+    final password = passwordController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      showMessage('Please enter your email and password.');
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      await _authService.login(
+        email: email,
+        password: password,
+      );
+
+      if (!mounted) {
+        return;
+      }
+
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        AppRoutes.baseView,
+        (route) => false,
+      );
+    } on ApiException catch (error) {
+      showMessage(error.message);
+    } on FormatException catch (error) {
+      showMessage(error.message);
+    } catch (_) {
+      showMessage('Something went wrong. Please try again.');
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
+
+  void showMessage(String message) {
+    if (!mounted) {
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,11 +117,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 10,
                 ),
                 AppButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/baseView');
-                  },
+                  onPressed: login,
                   label: 'Login',
                   isText: true,
+                  isLoading: isLoading,
                   labelColor: AppColors.whiteColor,
                   width: 322.w,
                 ),

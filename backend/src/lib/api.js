@@ -61,7 +61,7 @@ async function readJsonBody(req) {
 function withApi(handler, options = {}) {
   const methods = options.methods || ['GET'];
 
-  return async function apiHandler(req, res) {
+  async function apiHandler(req, res) {
     setCorsHeaders(req, res);
 
     if (req.method === 'OPTIONS') {
@@ -87,7 +87,10 @@ function withApi(handler, options = {}) {
       console.error(error);
       return sendError(res, 500, 'Internal server error');
     }
-  };
+  }
+
+  apiHandler.methods = methods;
+  return apiHandler;
 }
 
 module.exports = {
