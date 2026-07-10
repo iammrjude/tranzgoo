@@ -19,14 +19,14 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       child: MaterialApp(
-          title: 'Flutter Demo',
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme.appTheme,
-          builder: (context, child) => AppResponsiveFrame(
-                child: child ?? const SizedBox.shrink(),
-              ),
-          initialRoute: '/splashView',
-          routes: AppRoutes.getRoutes()),
+        title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.appTheme,
+        builder: (context, child) =>
+            AppResponsiveFrame(child: child ?? const SizedBox.shrink()),
+        initialRoute: '/splashView',
+        routes: AppRoutes.getRoutes(),
+      ),
     );
   }
 }

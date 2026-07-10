@@ -12,11 +12,11 @@ class HistoryComponent extends StatelessWidget {
   final ScrollPhysics physics;
 
   const HistoryComponent({
-    Key? key,
+    super.key,
     required this.transactions,
     this.shrinkWrap = true,
     this.physics = const NeverScrollableScrollPhysics(),
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -42,19 +42,14 @@ class HistoryComponent extends StatelessWidget {
 class TransactionTile extends StatelessWidget {
   final Map<String, dynamic> transaction;
 
-  const TransactionTile({
-    Key? key,
-    required this.transaction,
-  }) : super(key: key);
+  const TransactionTile({super.key, required this.transaction});
 
   @override
   Widget build(BuildContext context) {
     final direction = transaction['direction']?.toString() ?? 'debit';
     final isCredit = direction == 'credit';
-    final amountKobo = num.tryParse(
-          transaction['amountKobo']?.toString() ?? '0',
-        ) ??
-        0;
+    final amountKobo =
+        num.tryParse(transaction['amountKobo']?.toString() ?? '0') ?? 0;
     final amount = (amountKobo / 100).toStringAsFixed(2);
     final createdAt = DateTime.tryParse(
       transaction['createdAt']?.toString() ?? '',

@@ -5,10 +5,7 @@ import 'package:tranzgoo/utils/theme/app_style.dart';
 class AppLoadingState extends StatelessWidget {
   final String message;
 
-  const AppLoadingState({
-    Key? key,
-    this.message = 'Loading...',
-  }) : super(key: key);
+  const AppLoadingState({super.key, this.message = 'Loading...'});
 
   @override
   Widget build(BuildContext context) {
@@ -31,11 +28,7 @@ class AppEmptyState extends StatelessWidget {
   final String title;
   final String message;
 
-  const AppEmptyState({
-    Key? key,
-    required this.title,
-    required this.message,
-  }) : super(key: key);
+  const AppEmptyState({super.key, required this.title, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -72,10 +65,10 @@ class AppErrorState extends StatelessWidget {
   final VoidCallback onRetry;
 
   const AppErrorState({
-    Key? key,
+    super.key,
     required this.message,
     required this.onRetry,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -116,10 +109,10 @@ class AppInfoCard extends StatelessWidget {
   final Color color;
 
   const AppInfoCard({
-    Key? key,
+    super.key,
     required this.child,
     this.color = AppColors.whiteColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

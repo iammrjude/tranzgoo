@@ -10,7 +10,7 @@ import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 import 'package:tranzgoo/utils/widget/app_textfield.dart';
 
 class DataScreen extends StatefulWidget {
-  const DataScreen({Key? key}) : super(key: key);
+  const DataScreen({super.key});
 
   @override
   State<DataScreen> createState() => _DataScreenState();
@@ -49,8 +49,9 @@ class _DataScreenState extends State<DataScreen> {
       final firstNetwork = loadedNetworks.isEmpty
           ? null
           : loadedNetworks.first['id']?.toString();
-      final loadedPlans =
-          await _apiService.getDataPlans(network: firstNetwork ?? '');
+      final loadedPlans = await _apiService.getDataPlans(
+        network: firstNetwork ?? '',
+      );
 
       if (!mounted) {
         return;
@@ -60,8 +61,9 @@ class _DataScreenState extends State<DataScreen> {
         networks = loadedNetworks;
         plans = loadedPlans;
         selectedNetwork = firstNetwork;
-        selectedPlan =
-            loadedPlans.isEmpty ? null : loadedPlans.first['id']?.toString();
+        selectedPlan = loadedPlans.isEmpty
+            ? null
+            : loadedPlans.first['id']?.toString();
       });
     } on ApiException catch (error) {
       setState(() {
@@ -94,8 +96,9 @@ class _DataScreenState extends State<DataScreen> {
 
     setState(() {
       plans = loadedPlans;
-      selectedPlan =
-          loadedPlans.isEmpty ? null : loadedPlans.first['id']?.toString();
+      selectedPlan = loadedPlans.isEmpty
+          ? null
+          : loadedPlans.first['id']?.toString();
     });
   }
 
@@ -146,7 +149,9 @@ class _DataScreenState extends State<DataScreen> {
               ReceiptLineItem(label: 'Amount', value: 'NGN $planAmount'),
               ReceiptLineItem(label: 'Plan', value: planName),
               ReceiptLineItem(
-                  label: 'Phone', value: phoneController.text.trim()),
+                label: 'Phone',
+                value: phoneController.text.trim(),
+              ),
               if (transaction['reference'] != null)
                 ReceiptLineItem(
                   label: 'Reference',
@@ -154,8 +159,9 @@ class _DataScreenState extends State<DataScreen> {
                 ),
             ],
             primaryActionLabel: transactionId == null ? null : 'View Receipt',
-            primaryActionRoute:
-                transactionId == null ? null : AppRoutes.transactionDetailView,
+            primaryActionRoute: transactionId == null
+                ? null
+                : AppRoutes.transactionDetailView,
             primaryActionArguments: transactionId == null
                 ? null
                 : TransactionDetailArguments(
@@ -169,9 +175,9 @@ class _DataScreenState extends State<DataScreen> {
   }
 
   void showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -182,55 +188,52 @@ class _DataScreenState extends State<DataScreen> {
       child: isLoading
           ? const SizedBox(height: 260, child: AppLoadingState())
           : errorMessage != null
-              ? SizedBox(
-                  height: 260,
-                  child: AppErrorState(
-                    message: errorMessage!,
-                    onRetry: loadData,
-                  ),
-                )
-              : Column(
-                  children: [
-                    ServiceDropdown(
-                      hintText: 'Network',
-                      value: selectedNetwork,
-                      items: networks,
-                      itemLabel: (item) => item['name']?.toString() ?? '',
-                      onChanged: (value) {
-                        loadPlans(value).catchError((_) {
-                          showMessage('Unable to load plans for this network.');
-                        });
-                      },
-                    ),
-                    ServiceDropdown(
-                      hintText: 'Plan',
-                      value: selectedPlan,
-                      items: plans,
-                      itemLabel: (item) {
-                        final name = item['name']?.toString() ?? '';
-                        final amount = item['amount']?.toString() ?? '';
-                        return amount.isEmpty ? name : '$name - NGN $amount';
-                      },
-                      onChanged: (value) {
-                        setState(() {
-                          selectedPlan = value;
-                        });
-                      },
-                    ),
-                    AppTextField(
-                      controller: phoneController,
-                      hintText: 'Phone Number',
-                      keyboardType: TextInputType.phone,
-                      icon: Image.asset('assets/icons/phoneIcon.png'),
-                    ),
-                    AppButton(
-                      onPressed: reviewData,
-                      label: 'Review Data',
-                      isText: true,
-                      width: double.infinity,
-                    ),
-                  ],
+          ? SizedBox(
+              height: 260,
+              child: AppErrorState(message: errorMessage!, onRetry: loadData),
+            )
+          : Column(
+              children: [
+                ServiceDropdown(
+                  hintText: 'Network',
+                  value: selectedNetwork,
+                  items: networks,
+                  itemLabel: (item) => item['name']?.toString() ?? '',
+                  onChanged: (value) {
+                    loadPlans(value).catchError((_) {
+                      showMessage('Unable to load plans for this network.');
+                    });
+                  },
                 ),
+                ServiceDropdown(
+                  hintText: 'Plan',
+                  value: selectedPlan,
+                  items: plans,
+                  itemLabel: (item) {
+                    final name = item['name']?.toString() ?? '';
+                    final amount = item['amount']?.toString() ?? '';
+                    return amount.isEmpty ? name : '$name - NGN $amount';
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      selectedPlan = value;
+                    });
+                  },
+                ),
+                AppTextField(
+                  controller: phoneController,
+                  hintText: 'Phone Number',
+                  keyboardType: TextInputType.phone,
+                  icon: Image.asset('assets/icons/phoneIcon.png'),
+                ),
+                AppButton(
+                  onPressed: reviewData,
+                  label: 'Review Data',
+                  isText: true,
+                  width: double.infinity,
+                ),
+              ],
+            ),
     );
   }
 }

@@ -3,7 +3,7 @@ import 'package:tranzgoo/utils/theme/app_colors.dart';
 import 'package:tranzgoo/utils/widget/responsive_layout.dart';
 
 class CarouselComponent extends StatefulWidget {
-  const CarouselComponent({Key? key}) : super(key: key);
+  const CarouselComponent({super.key});
 
   @override
   State<CarouselComponent> createState() => _CarouselComponentState();
@@ -11,9 +11,7 @@ class CarouselComponent extends StatefulWidget {
 
 class _CarouselComponentState extends State<CarouselComponent> {
   int initialPage = 0;
-  PageController pageController = PageController(
-    viewportFraction: 0.957,
-  );
+  PageController pageController = PageController(viewportFraction: 0.957);
   List<String> images = [
     'assets/images/Flyer 01 1.png',
     'assets/images/Flyer 01 1.png',
@@ -45,11 +43,9 @@ class _CarouselComponentState extends State<CarouselComponent> {
                 controller: pageController,
                 itemCount: images.length,
                 onPageChanged: (e) {
-                  setState(
-                    () {
-                      initialPage = e;
-                    },
-                  );
+                  setState(() {
+                    initialPage = e;
+                  });
                 },
                 itemBuilder: (context, index) {
                   return Padding(
@@ -81,7 +77,7 @@ class _CarouselComponentState extends State<CarouselComponent> {
                   ),
                 ),
               ),
-            )
+            ),
           ],
         );
       },

@@ -15,8 +15,9 @@ Future<void> pumpAuthScreen(WidgetTester tester, Widget child) async {
 }
 
 void main() {
-  testWidgets('renders login screen fields and button',
-      (WidgetTester tester) async {
+  testWidgets('renders login screen fields and button', (
+    WidgetTester tester,
+  ) async {
     await pumpAuthScreen(tester, const LoginScreen());
 
     expect(find.text('Email'), findsOneWidget);
@@ -24,8 +25,9 @@ void main() {
     expect(find.text('Login'), findsWidgets);
   });
 
-  testWidgets('renders register screen fields and submit button',
-      (WidgetTester tester) async {
+  testWidgets('renders register screen fields and submit button', (
+    WidgetTester tester,
+  ) async {
     await pumpAuthScreen(tester, const RegisterScreen());
 
     expect(find.text('Register'), findsOneWidget);

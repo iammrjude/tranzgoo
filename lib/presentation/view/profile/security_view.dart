@@ -9,7 +9,7 @@ import 'package:tranzgoo/utils/widget/app_button.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 
 class SecurityScreen extends StatefulWidget {
-  const SecurityScreen({Key? key}) : super(key: key);
+  const SecurityScreen({super.key});
 
   @override
   State<SecurityScreen> createState() => _SecurityScreenState();
@@ -72,43 +72,42 @@ class _SecurityScreenState extends State<SecurityScreen> {
       body: isLoading
           ? const AppLoadingState(message: 'Loading security...')
           : errorMessage != null
-              ? AppErrorState(message: errorMessage!, onRetry: loadSecurity)
-              : RefreshIndicator(
-                  color: AppColors.primaryColor,
-                  onRefresh: loadSecurity,
-                  child: ListView(
-                    padding: const EdgeInsets.fromLTRB(24, 20, 24, 30),
-                    children: [
-                      appSectionTitle('Account Security'),
-                      const SizedBox(height: 16),
-                      securityRow('Account Status', data?['accountStatus']),
-                      securityRow(
-                          'Last Login', formatDate(data?['lastLoginAt'])),
-                      securityRow(
-                        'Password Changed',
-                        formatDate(data?['passwordChangedAt']),
-                      ),
-                      securityRow(
-                        'Two-factor Authentication',
-                        data?['twoFactorEnabled'] == true ? 'Enabled' : 'Off',
-                      ),
-                      securityRow(
-                        'Active Sessions',
-                        data?['activeSessions']?.toString(),
-                      ),
-                      const SizedBox(height: 20),
-                      AppButton(
-                        onPressed: () => Navigator.pushNamed(
-                          context,
-                          AppRoutes.changePasswordView,
-                        ).then((_) => loadSecurity()),
-                        label: 'Change Password',
-                        isText: true,
-                        width: double.infinity,
-                      ),
-                    ],
+          ? AppErrorState(message: errorMessage!, onRetry: loadSecurity)
+          : RefreshIndicator(
+              color: AppColors.primaryColor,
+              onRefresh: loadSecurity,
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(24, 20, 24, 30),
+                children: [
+                  appSectionTitle('Account Security'),
+                  const SizedBox(height: 16),
+                  securityRow('Account Status', data?['accountStatus']),
+                  securityRow('Last Login', formatDate(data?['lastLoginAt'])),
+                  securityRow(
+                    'Password Changed',
+                    formatDate(data?['passwordChangedAt']),
                   ),
-                ),
+                  securityRow(
+                    'Two-factor Authentication',
+                    data?['twoFactorEnabled'] == true ? 'Enabled' : 'Off',
+                  ),
+                  securityRow(
+                    'Active Sessions',
+                    data?['activeSessions']?.toString(),
+                  ),
+                  const SizedBox(height: 20),
+                  AppButton(
+                    onPressed: () => Navigator.pushNamed(
+                      context,
+                      AppRoutes.changePasswordView,
+                    ).then((_) => loadSecurity()),
+                    label: 'Change Password',
+                    isText: true,
+                    width: double.infinity,
+                  ),
+                ],
+              ),
+            ),
     );
   }
 }

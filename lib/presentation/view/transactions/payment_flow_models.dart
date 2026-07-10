@@ -2,10 +2,7 @@ class ReceiptLineItem {
   final String label;
   final String value;
 
-  const ReceiptLineItem({
-    required this.label,
-    required this.value,
-  });
+  const ReceiptLineItem({required this.label, required this.value});
 }
 
 class TransactionResultArguments {

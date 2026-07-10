@@ -4,10 +4,7 @@ class AuthSession {
   final String token;
   final AppUser user;
 
-  const AuthSession({
-    required this.token,
-    required this.user,
-  });
+  const AuthSession({required this.token, required this.user});
 
   factory AuthSession.fromJson(Map<String, dynamic> json) {
     final userJson = json['user'];
@@ -23,9 +20,6 @@ class AuthSession {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'token': token,
-      'user': user.toJson(),
-    };
+    return {'token': token, 'user': user.toJson()};
   }
 }

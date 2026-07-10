@@ -9,7 +9,7 @@ import 'package:tranzgoo/utils/widget/app_textfield.dart';
 import 'package:tranzgoo/utils/widget/responsive_layout.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  const EditProfileScreen({Key? key}) : super(key: key);
+  const EditProfileScreen({super.key});
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
@@ -110,9 +110,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   void showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -125,47 +125,46 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       body: isLoading
           ? const AppLoadingState(message: 'Loading profile...')
           : errorMessage != null
-              ? AppErrorState(message: errorMessage!, onRetry: loadProfile)
-              : AppResponsiveScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      appSectionTitle('Personal Information'),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Update your account details.',
-                        style:
-                            AppText.mediumStyle.copyWith(letterSpacing: 0.09),
-                      ),
-                      const SizedBox(height: 20),
-                      AppTextField(
-                        controller: fullNameController,
-                        hintText: 'Full Name',
-                        icon: Image.asset('assets/icons/profileIcon.png'),
-                      ),
-                      AppTextField(
-                        controller: emailController,
-                        hintText: 'Email',
-                        keyboardType: TextInputType.emailAddress,
-                        icon: Image.asset('assets/icons/emailIcon.png'),
-                      ),
-                      AppTextField(
-                        controller: phoneController,
-                        hintText: 'Phone',
-                        keyboardType: TextInputType.phone,
-                        icon: Image.asset('assets/icons/phoneIcon.png'),
-                      ),
-                      const SizedBox(height: 20),
-                      AppButton(
-                        onPressed: saveProfile,
-                        label: 'Save Changes',
-                        isText: true,
-                        isLoading: isSaving,
-                        labelColor: AppColors.whiteColor,
-                      ),
-                    ],
+          ? AppErrorState(message: errorMessage!, onRetry: loadProfile)
+          : AppResponsiveScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  appSectionTitle('Personal Information'),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Update your account details.',
+                    style: AppText.mediumStyle.copyWith(letterSpacing: 0.09),
                   ),
-                ),
+                  const SizedBox(height: 20),
+                  AppTextField(
+                    controller: fullNameController,
+                    hintText: 'Full Name',
+                    icon: Image.asset('assets/icons/profileIcon.png'),
+                  ),
+                  AppTextField(
+                    controller: emailController,
+                    hintText: 'Email',
+                    keyboardType: TextInputType.emailAddress,
+                    icon: Image.asset('assets/icons/emailIcon.png'),
+                  ),
+                  AppTextField(
+                    controller: phoneController,
+                    hintText: 'Phone',
+                    keyboardType: TextInputType.phone,
+                    icon: Image.asset('assets/icons/phoneIcon.png'),
+                  ),
+                  const SizedBox(height: 20),
+                  AppButton(
+                    onPressed: saveProfile,
+                    label: 'Save Changes',
+                    isText: true,
+                    isLoading: isSaving,
+                    labelColor: AppColors.whiteColor,
+                  ),
+                ],
+              ),
+            ),
     );
   }
 }

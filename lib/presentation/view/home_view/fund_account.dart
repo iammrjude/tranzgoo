@@ -8,7 +8,7 @@ import 'package:tranzgoo/utils/widget/app_clickable_surface.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 
 class FundAccount extends StatefulWidget {
-  const FundAccount({Key? key}) : super(key: key);
+  const FundAccount({super.key});
 
   @override
   State<FundAccount> createState() => _FundAccountState();
@@ -61,9 +61,9 @@ class _FundAccountState extends State<FundAccount> {
 
   void copyAccount(String accountNumber) {
     Clipboard.setData(ClipboardData(text: accountNumber));
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Account number copied.')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Account number copied.')));
   }
 
   @override
@@ -92,41 +92,39 @@ class _FundAccountState extends State<FundAccount> {
         child: isLoading
             ? const AppLoadingState(message: 'Loading funding accounts...')
             : errorMessage != null
-                ? AppErrorState(message: errorMessage!, onRetry: loadAccounts)
-                : RefreshIndicator(
-                    onRefresh: loadAccounts,
-                    child: ListView(
-                      padding: const EdgeInsets.symmetric(horizontal: 25),
-                      children: [
-                        Text(
-                          'Transfer to any of the account numbers below to fund your account.',
-                          textAlign: TextAlign.center,
-                          style:
-                              AppText.mediumStyle.copyWith(letterSpacing: 0.09),
-                        ),
-                        const SizedBox(height: 10),
-                        if (accounts.isEmpty)
-                          const AppEmptyState(
-                            title: 'No funding account',
-                            message:
-                                'Funding account details will appear here when available.',
-                          )
-                        else
-                          ...accounts.map(
-                            (account) => fundAccountContainer(
-                              bankName: account['bankName']?.toString() ?? '',
-                              accountName:
-                                  account['accountName']?.toString() ?? '',
-                              accountNumber:
-                                  account['accountNumber']?.toString() ?? '',
-                              onCopy: () => copyAccount(
-                                account['accountNumber']?.toString() ?? '',
-                              ),
-                            ),
-                          ),
-                      ],
+            ? AppErrorState(message: errorMessage!, onRetry: loadAccounts)
+            : RefreshIndicator(
+                onRefresh: loadAccounts,
+                child: ListView(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  children: [
+                    Text(
+                      'Transfer to any of the account numbers below to fund your account.',
+                      textAlign: TextAlign.center,
+                      style: AppText.mediumStyle.copyWith(letterSpacing: 0.09),
                     ),
-                  ),
+                    const SizedBox(height: 10),
+                    if (accounts.isEmpty)
+                      const AppEmptyState(
+                        title: 'No funding account',
+                        message:
+                            'Funding account details will appear here when available.',
+                      )
+                    else
+                      ...accounts.map(
+                        (account) => fundAccountContainer(
+                          bankName: account['bankName']?.toString() ?? '',
+                          accountName: account['accountName']?.toString() ?? '',
+                          accountNumber:
+                              account['accountNumber']?.toString() ?? '',
+                          onCopy: () => copyAccount(
+                            account['accountNumber']?.toString() ?? '',
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
       ),
     );
   }
@@ -173,8 +171,9 @@ Widget fundAccountContainer({
                     accountNumber,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style:
-                        AppText.extraBold.copyWith(color: AppColors.whiteColor),
+                    style: AppText.extraBold.copyWith(
+                      color: AppColors.whiteColor,
+                    ),
                   ),
                 ],
               ),
@@ -193,15 +192,12 @@ Widget fundAccountContainer({
                     size: 16,
                     color: AppColors.whiteColor,
                   ),
-                  Text(
-                    'Copy',
-                    style: TextStyle(color: AppColors.whiteColor),
-                  )
+                  Text('Copy', style: TextStyle(color: AppColors.whiteColor)),
                 ],
               ),
-            )
+            ),
           ],
-        )
+        ),
       ],
     ),
   );

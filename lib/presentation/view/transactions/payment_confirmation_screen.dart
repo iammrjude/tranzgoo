@@ -8,7 +8,7 @@ import 'package:tranzgoo/utils/widget/app_button.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 
 class PaymentConfirmationScreen extends StatefulWidget {
-  const PaymentConfirmationScreen({Key? key}) : super(key: key);
+  const PaymentConfirmationScreen({super.key});
 
   @override
   State<PaymentConfirmationScreen> createState() =>

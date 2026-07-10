@@ -9,7 +9,7 @@ import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 import 'package:tranzgoo/utils/widget/responsive_layout.dart';
 
 class ServiceScreen extends StatefulWidget {
-  const ServiceScreen({Key? key}) : super(key: key);
+  const ServiceScreen({super.key});
 
   @override
   State<ServiceScreen> createState() => _ServiceScreenState();
@@ -71,16 +71,14 @@ class _ServiceScreenState extends State<ServiceScreen> {
           children: [
             Text(
               'Services',
-              style:
-                  AppText.extraBold.copyWith(fontSize: 16, letterSpacing: 0.09),
+              style: AppText.extraBold.copyWith(
+                fontSize: 16,
+                letterSpacing: 0.09,
+              ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 10),
             const Text('Explore our range of services'),
-            const SizedBox(
-              height: 13,
-            ),
+            const SizedBox(height: 13),
             if (isLoading)
               const SizedBox(height: 260, child: AppLoadingState())
             else if (errorMessage != null)
@@ -173,20 +171,17 @@ Widget serviceContainer(Widget widget, String text, VoidCallback onTap) {
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SizedBox.square(
-          dimension: 30,
-          child: FittedBox(child: widget),
-        ),
-        const SizedBox(
-          height: 8,
-        ),
+        SizedBox.square(dimension: 30, child: FittedBox(child: widget)),
+        const SizedBox(height: 8),
         Text(
           text,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
-          style: AppText.extraBold
-              .copyWith(color: AppColors.primaryColor, letterSpacing: 0.09),
+          style: AppText.extraBold.copyWith(
+            color: AppColors.primaryColor,
+            letterSpacing: 0.09,
+          ),
         ),
       ],
     ),

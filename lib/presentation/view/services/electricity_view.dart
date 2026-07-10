@@ -10,7 +10,7 @@ import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 import 'package:tranzgoo/utils/widget/app_textfield.dart';
 
 class ElectricityScreen extends StatefulWidget {
-  const ElectricityScreen({Key? key}) : super(key: key);
+  const ElectricityScreen({super.key});
 
   @override
   State<ElectricityScreen> createState() => _ElectricityScreenState();
@@ -168,11 +168,14 @@ class _ElectricityScreenState extends State<ElectricityScreen> {
                 : 'Your electricity purchase has been completed. New balance: NGN $balance',
             details: [
               ReceiptLineItem(
-                  label: 'Amount',
-                  value: 'NGN ${amountController.text.trim()}'),
+                label: 'Amount',
+                value: 'NGN ${amountController.text.trim()}',
+              ),
               ReceiptLineItem(label: 'Provider', value: providerName ?? ''),
               ReceiptLineItem(
-                  label: 'Meter', value: meterController.text.trim()),
+                label: 'Meter',
+                value: meterController.text.trim(),
+              ),
               if (token != null) ReceiptLineItem(label: 'Token', value: token),
               if (transaction['reference'] != null)
                 ReceiptLineItem(
@@ -181,8 +184,9 @@ class _ElectricityScreenState extends State<ElectricityScreen> {
                 ),
             ],
             primaryActionLabel: transactionId == null ? null : 'View Receipt',
-            primaryActionRoute:
-                transactionId == null ? null : AppRoutes.transactionDetailView,
+            primaryActionRoute: transactionId == null
+                ? null
+                : AppRoutes.transactionDetailView,
             primaryActionArguments: transactionId == null
                 ? null
                 : TransactionDetailArguments(
@@ -196,9 +200,9 @@ class _ElectricityScreenState extends State<ElectricityScreen> {
   }
 
   void showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -209,90 +213,88 @@ class _ElectricityScreenState extends State<ElectricityScreen> {
       child: isLoading
           ? const SizedBox(height: 260, child: AppLoadingState())
           : errorMessage != null
-              ? SizedBox(
-                  height: 260,
-                  child: AppErrorState(
-                    message: errorMessage!,
-                    onRetry: loadProviders,
+          ? SizedBox(
+              height: 260,
+              child: AppErrorState(
+                message: errorMessage!,
+                onRetry: loadProviders,
+              ),
+            )
+          : Column(
+              children: [
+                ServiceDropdown(
+                  hintText: 'Provider',
+                  value: selectedProvider,
+                  items: providers,
+                  itemLabel: (item) => item['name']?.toString() ?? '',
+                  onChanged: (value) {
+                    setState(() {
+                      selectedProvider = value;
+                      customer = null;
+                    });
+                  },
+                ),
+                AppTextField(
+                  controller: meterController,
+                  hintText: 'Meter Number',
+                  keyboardType: TextInputType.number,
+                  icon: const Icon(Icons.electric_meter),
+                ),
+                Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.only(bottom: 17),
+                  child: SegmentedButton<String>(
+                    segments: const [
+                      ButtonSegment(value: 'prepaid', label: Text('Prepaid')),
+                      ButtonSegment(value: 'postpaid', label: Text('Postpaid')),
+                    ],
+                    selected: {meterType},
+                    onSelectionChanged: (values) {
+                      setState(() {
+                        meterType = values.first;
+                      });
+                    },
                   ),
-                )
-              : Column(
+                ),
+                AppTextField(
+                  controller: amountController,
+                  hintText: 'Amount',
+                  keyboardType: TextInputType.number,
+                  icon: const Icon(Icons.payments),
+                ),
+                if (customer != null)
+                  ServiceResultCard(
+                    title: 'Customer Found',
+                    lines: [
+                      'Name: ${customer!['name'] ?? ''}',
+                      'Provider: ${customer!['provider'] ?? ''}',
+                      'Meter: ${customer!['meterNumber'] ?? ''}',
+                    ],
+                  ),
+                Row(
                   children: [
-                    ServiceDropdown(
-                      hintText: 'Provider',
-                      value: selectedProvider,
-                      items: providers,
-                      itemLabel: (item) => item['name']?.toString() ?? '',
-                      onChanged: (value) {
-                        setState(() {
-                          selectedProvider = value;
-                          customer = null;
-                        });
-                      },
-                    ),
-                    AppTextField(
-                      controller: meterController,
-                      hintText: 'Meter Number',
-                      keyboardType: TextInputType.number,
-                      icon: const Icon(Icons.electric_meter),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      margin: const EdgeInsets.only(bottom: 17),
-                      child: SegmentedButton<String>(
-                        segments: const [
-                          ButtonSegment(
-                              value: 'prepaid', label: Text('Prepaid')),
-                          ButtonSegment(
-                              value: 'postpaid', label: Text('Postpaid')),
-                        ],
-                        selected: {meterType},
-                        onSelectionChanged: (values) {
-                          setState(() {
-                            meterType = values.first;
-                          });
-                        },
+                    Expanded(
+                      child: AppButton(
+                        onPressed: validateMeter,
+                        label: 'Validate',
+                        isText: true,
+                        isLoading: isValidating,
+                        width: double.infinity,
                       ),
                     ),
-                    AppTextField(
-                      controller: amountController,
-                      hintText: 'Amount',
-                      keyboardType: TextInputType.number,
-                      icon: const Icon(Icons.payments),
-                    ),
-                    if (customer != null)
-                      ServiceResultCard(
-                        title: 'Customer Found',
-                        lines: [
-                          'Name: ${customer!['name'] ?? ''}',
-                          'Provider: ${customer!['provider'] ?? ''}',
-                          'Meter: ${customer!['meterNumber'] ?? ''}',
-                        ],
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: AppButton(
+                        onPressed: reviewElectricity,
+                        label: 'Review',
+                        isText: true,
+                        width: double.infinity,
                       ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: AppButton(
-                            onPressed: validateMeter,
-                            label: 'Validate',
-                            isText: true,
-                            isLoading: isValidating,
-                            width: double.infinity,
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: AppButton(
-                            onPressed: reviewElectricity,
-                            label: 'Review',
-                            isText: true,
-                            width: double.infinity,
-                          ),
-                        ),
-                      ],
                     ),
                   ],
                 ),
+              ],
+            ),
     );
   }
 }

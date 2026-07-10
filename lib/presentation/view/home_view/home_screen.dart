@@ -12,7 +12,7 @@ import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 import 'package:tranzgoo/utils/widget/responsive_layout.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -79,18 +79,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (errorMessage != null) {
       return Scaffold(
-        body: AppErrorState(
-          message: errorMessage!,
-          onRetry: loadHome,
-        ),
+        body: AppErrorState(message: errorMessage!, onRetry: loadHome),
       );
     }
 
     final fullName = user?['fullName']?.toString() ?? 'TranzGOO User';
     final firstName =
         fullName.split(' ').where((part) => part.isNotEmpty).isEmpty
-            ? fullName
-            : fullName.split(' ').first;
+        ? fullName
+        : fullName.split(' ').first;
     final tranzgoId = user?['tranzgoId']?.toString() ?? '';
     final balance = wallet?['balance']?.toString() ?? '0.00';
 
@@ -164,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   letterSpacing: 0.092,
                                   fontSize: 10,
                                 ),
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -185,14 +182,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     border: Border.all(color: AppColors.primaryColor),
                     borderRadius: BorderRadius.circular(6),
                     child: Image.asset('assets/icons/notification.png'),
-                  )
+                  ),
                 ],
               ),
               const SizedBox(height: 20),
               AccountCard(
                 balance: balance,
-                onSend: () => Navigator.pushNamed(context, AppRoutes.sendView)
-                    .then((_) => loadHome()),
+                onSend: () => Navigator.pushNamed(
+                  context,
+                  AppRoutes.sendView,
+                ).then((_) => loadHome()),
                 onFund: () => Navigator.pushNamed(
                   context,
                   AppRoutes.fundAccountView,
@@ -263,10 +262,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: AppColors.primaryColor,
                       ),
                       text: 'More',
-                      onTap: () => Navigator.pushNamed(
-                        context,
-                        AppRoutes.servicesView,
-                      ),
+                      onTap: () =>
+                          Navigator.pushNamed(context, AppRoutes.servicesView),
                     ),
                   ),
                 ],
@@ -343,7 +340,7 @@ Widget quickAccessContainer({
             color: AppColors.primaryColor,
             letterSpacing: 0.092,
           ),
-        )
+        ),
       ],
     ),
   );

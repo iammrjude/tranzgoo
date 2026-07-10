@@ -12,7 +12,7 @@ import 'package:tranzgoo/utils/widget/app_textfield.dart';
 import 'package:tranzgoo/utils/widget/responsive_layout.dart';
 
 class SendView extends StatefulWidget {
-  const SendView({Key? key}) : super(key: key);
+  const SendView({super.key});
 
   @override
   State<SendView> createState() => _SendViewState();
@@ -113,9 +113,13 @@ class _SendViewState extends State<SendView> {
                 : 'Your transfer has been completed. New balance: NGN $balance',
             details: [
               ReceiptLineItem(
-                  label: 'Amount', value: 'NGN ${amount.text.trim()}'),
+                label: 'Amount',
+                value: 'NGN ${amount.text.trim()}',
+              ),
               ReceiptLineItem(
-                  label: 'Receiver ID', value: tranzgoId.text.trim()),
+                label: 'Receiver ID',
+                value: tranzgoId.text.trim(),
+              ),
               if (transaction['reference'] != null)
                 ReceiptLineItem(
                   label: 'Reference',
@@ -123,8 +127,9 @@ class _SendViewState extends State<SendView> {
                 ),
             ],
             primaryActionLabel: transactionId == null ? null : 'View Receipt',
-            primaryActionRoute:
-                transactionId == null ? null : AppRoutes.transactionDetailView,
+            primaryActionRoute: transactionId == null
+                ? null
+                : AppRoutes.transactionDetailView,
             primaryActionArguments: transactionId == null
                 ? null
                 : TransactionDetailArguments(
@@ -138,9 +143,9 @@ class _SendViewState extends State<SendView> {
   }
 
   void showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -203,16 +208,13 @@ class _SendViewState extends State<SendView> {
               hintText: '0.00',
               keyboardType: TextInputType.number,
             ),
-            AppTextField(
-              controller: note,
-              hintText: 'Note (optional)',
-            ),
+            AppTextField(controller: note, hintText: 'Note (optional)'),
             const SizedBox(height: 20),
             AppButton(
               onPressed: confirmTransfer,
               label: 'Review Transfer',
               isText: true,
-            )
+            ),
           ],
         ),
       ),

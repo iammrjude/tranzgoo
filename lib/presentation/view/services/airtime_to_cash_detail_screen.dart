@@ -7,7 +7,7 @@ import 'package:tranzgoo/utils/theme/app_style.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 
 class AirtimeToCashDetailScreen extends StatefulWidget {
-  const AirtimeToCashDetailScreen({Key? key}) : super(key: key);
+  const AirtimeToCashDetailScreen({super.key});
 
   @override
   State<AirtimeToCashDetailScreen> createState() =>
@@ -98,36 +98,39 @@ class _AirtimeToCashDetailScreenState extends State<AirtimeToCashDetailScreen> {
       body: isLoading && data == null
           ? const AppLoadingState(message: 'Loading request...')
           : errorMessage != null && data == null
-              ? AppErrorState(message: errorMessage!, onRetry: loadRequest)
-              : RefreshIndicator(
-                  onRefresh: loadRequest,
-                  color: AppColors.primaryColor,
-                  child: ListView(
-                    padding: const EdgeInsets.fromLTRB(24, 20, 24, 30),
-                    children: [
-                      appSectionTitle('Request ${data?['requestCode'] ?? ''}'),
-                      const SizedBox(height: 12),
-                      AppInfoCard(
-                        color: AppColors.primaryLightColor,
-                        child: Text(
-                          data?['instructions']?.toString() ??
-                              'Follow the provided transfer instructions.',
-                          style:
-                              AppText.mediumStyle.copyWith(letterSpacing: 0.09),
-                        ),
-                      ),
-                      detailRow('Network', data?['network']),
-                      detailRow('Phone', data?['phone']),
-                      detailRow(
-                          'Airtime Amount', formatAmount(data?['amountKobo'])),
-                      detailRow('Wallet Payout',
-                          formatAmount(data?['payoutAmountKobo'])),
-                      detailRow('Rate', data?['rate']),
-                      detailRow('Status', data?['status']),
-                      detailRow('Created', formatDate(data?['createdAt'])),
-                    ],
+          ? AppErrorState(message: errorMessage!, onRetry: loadRequest)
+          : RefreshIndicator(
+              onRefresh: loadRequest,
+              color: AppColors.primaryColor,
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(24, 20, 24, 30),
+                children: [
+                  appSectionTitle('Request ${data?['requestCode'] ?? ''}'),
+                  const SizedBox(height: 12),
+                  AppInfoCard(
+                    color: AppColors.primaryLightColor,
+                    child: Text(
+                      data?['instructions']?.toString() ??
+                          'Follow the provided transfer instructions.',
+                      style: AppText.mediumStyle.copyWith(letterSpacing: 0.09),
+                    ),
                   ),
-                ),
+                  detailRow('Network', data?['network']),
+                  detailRow('Phone', data?['phone']),
+                  detailRow(
+                    'Airtime Amount',
+                    formatAmount(data?['amountKobo']),
+                  ),
+                  detailRow(
+                    'Wallet Payout',
+                    formatAmount(data?['payoutAmountKobo']),
+                  ),
+                  detailRow('Rate', data?['rate']),
+                  detailRow('Status', data?['status']),
+                  detailRow('Created', formatDate(data?['createdAt'])),
+                ],
+              ),
+            ),
     );
   }
 }

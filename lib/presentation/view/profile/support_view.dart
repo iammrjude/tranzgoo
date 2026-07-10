@@ -8,7 +8,7 @@ import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 import 'package:tranzgoo/utils/widget/app_textfield.dart';
 
 class SupportScreen extends StatefulWidget {
-  const SupportScreen({Key? key}) : super(key: key);
+  const SupportScreen({super.key});
 
   @override
   State<SupportScreen> createState() => _SupportScreenState();
@@ -103,9 +103,9 @@ class _SupportScreenState extends State<SupportScreen> {
   }
 
   void showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -118,105 +118,103 @@ class _SupportScreenState extends State<SupportScreen> {
       body: isLoading
           ? const AppLoadingState(message: 'Loading support...')
           : errorMessage != null
-              ? AppErrorState(message: errorMessage!, onRetry: loadTickets)
-              : RefreshIndicator(
-                  color: AppColors.primaryColor,
-                  onRefresh: loadTickets,
-                  child: ListView(
-                    padding: const EdgeInsets.fromLTRB(24, 20, 24, 30),
-                    children: [
-                      appSectionTitle('Contact Support'),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Create a ticket and track your support requests.',
-                        style:
-                            AppText.mediumStyle.copyWith(letterSpacing: 0.09),
-                      ),
-                      const SizedBox(height: 20),
-                      AppTextField(
-                        controller: subjectController,
-                        hintText: 'Subject',
-                        icon: Image.asset('assets/icons/bx_support.png'),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.only(bottom: 17),
-                        child: TextFormField(
-                          controller: messageController,
-                          minLines: 4,
-                          maxLines: 5,
-                          decoration: InputDecoration(
-                            hintText: 'Message',
-                            filled: true,
-                            fillColor: AppColors.whiteColor,
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: const BorderSide(
-                                color: AppColors.primaryColor,
-                              ),
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
+          ? AppErrorState(message: errorMessage!, onRetry: loadTickets)
+          : RefreshIndicator(
+              color: AppColors.primaryColor,
+              onRefresh: loadTickets,
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(24, 20, 24, 30),
+                children: [
+                  appSectionTitle('Contact Support'),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Create a ticket and track your support requests.',
+                    style: AppText.mediumStyle.copyWith(letterSpacing: 0.09),
+                  ),
+                  const SizedBox(height: 20),
+                  AppTextField(
+                    controller: subjectController,
+                    hintText: 'Subject',
+                    icon: Image.asset('assets/icons/bx_support.png'),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 17),
+                    child: TextFormField(
+                      controller: messageController,
+                      minLines: 4,
+                      maxLines: 5,
+                      decoration: InputDecoration(
+                        hintText: 'Message',
+                        filled: true,
+                        fillColor: AppColors.whiteColor,
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: const BorderSide(
+                            color: AppColors.primaryColor,
                           ),
                         ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
-                      AppButton(
-                        onPressed: createTicket,
-                        label: 'Create Ticket',
-                        isText: true,
-                        isLoading: isSubmitting,
-                      ),
-                      const SizedBox(height: 24),
-                      appSectionTitle('Your Tickets'),
-                      const SizedBox(height: 12),
-                      if (tickets.isEmpty)
-                        const AppEmptyState(
-                          title: 'No support tickets',
-                          message: 'Tickets you create will appear here.',
-                        )
-                      else
-                        ...tickets.map(
-                          (ticket) => AppInfoCard(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                    ),
+                  ),
+                  AppButton(
+                    onPressed: createTicket,
+                    label: 'Create Ticket',
+                    isText: true,
+                    isLoading: isSubmitting,
+                  ),
+                  const SizedBox(height: 24),
+                  appSectionTitle('Your Tickets'),
+                  const SizedBox(height: 12),
+                  if (tickets.isEmpty)
+                    const AppEmptyState(
+                      title: 'No support tickets',
+                      message: 'Tickets you create will appear here.',
+                    )
+                  else
+                    ...tickets.map(
+                      (ticket) => AppInfoCard(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        ticket['subject']?.toString() ?? '',
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: AppText.extraBold.copyWith(
-                                          letterSpacing: 0.09,
-                                        ),
-                                      ),
+                                Expanded(
+                                  child: Text(
+                                    ticket['subject']?.toString() ?? '',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: AppText.extraBold.copyWith(
+                                      letterSpacing: 0.09,
                                     ),
-                                    Text(
-                                      ticket['status']?.toString() ?? 'open',
-                                      style: AppText.mediumStyle.copyWith(
-                                        color: AppColors.primaryColor,
-                                        letterSpacing: 0.09,
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                                const SizedBox(height: 6),
                                 Text(
-                                  ticket['message']?.toString() ?? '',
+                                  ticket['status']?.toString() ?? 'open',
                                   style: AppText.mediumStyle.copyWith(
+                                    color: AppColors.primaryColor,
                                     letterSpacing: 0.09,
                                   ),
                                 ),
                               ],
                             ),
-                          ),
+                            const SizedBox(height: 6),
+                            Text(
+                              ticket['message']?.toString() ?? '',
+                              style: AppText.mediumStyle.copyWith(
+                                letterSpacing: 0.09,
+                              ),
+                            ),
+                          ],
                         ),
-                    ],
-                  ),
-                ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
     );
   }
 }

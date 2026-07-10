@@ -26,10 +26,7 @@ class AppResponsive {
 class AppResponsiveFrame extends StatelessWidget {
   final Widget child;
 
-  const AppResponsiveFrame({
-    Key? key,
-    required this.child,
-  }) : super(key: key);
+  const AppResponsiveFrame({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +43,9 @@ class AppResponsiveFrame extends StatelessWidget {
       color: AppColors.scaffoldLayoutColor,
       child: Center(
         child: ConstrainedBox(
-          constraints:
-              const BoxConstraints(maxWidth: AppResponsive.appMaxWidth),
+          constraints: const BoxConstraints(
+            maxWidth: AppResponsive.appMaxWidth,
+          ),
           child: MediaQuery(
             data: mediaQuery.copyWith(size: Size(framedWidth, size.height)),
             child: child,
@@ -66,20 +64,18 @@ class AppResponsiveScrollView extends StatelessWidget {
   final ScrollPhysics physics;
 
   const AppResponsiveScrollView({
-    Key? key,
+    super.key,
     required this.child,
     this.maxWidth = AppResponsive.formMaxWidth,
     this.padding,
     this.centerVertically = false,
     this.physics = const BouncingScrollPhysics(),
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    final resolvedPadding =
-        (padding ?? AppResponsive.pagePadding(context)).resolve(
-      Directionality.of(context),
-    );
+    final resolvedPadding = (padding ?? AppResponsive.pagePadding(context))
+        .resolve(Directionality.of(context));
 
     return SafeArea(
       bottom: false,
@@ -97,8 +93,9 @@ class AppResponsiveScrollView extends StatelessWidget {
               child: ConstrainedBox(
                 constraints: BoxConstraints(minHeight: minHeight),
                 child: Align(
-                  alignment:
-                      centerVertically ? Alignment.center : Alignment.topCenter,
+                  alignment: centerVertically
+                      ? Alignment.center
+                      : Alignment.topCenter,
                   child: ConstrainedBox(
                     constraints: BoxConstraints(maxWidth: maxWidth),
                     child: child,

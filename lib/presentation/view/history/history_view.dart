@@ -6,7 +6,7 @@ import 'package:tranzgoo/utils/theme/app_style.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 
 class HistoryScreen extends StatefulWidget {
-  const HistoryScreen({Key? key}) : super(key: key);
+  const HistoryScreen({super.key});
 
   @override
   State<HistoryScreen> createState() => _HistoryScreenState();
@@ -69,21 +69,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
         child: isLoading
             ? const AppLoadingState(message: 'Loading transactions...')
             : errorMessage != null
-                ? AppErrorState(
-                    message: errorMessage!,
-                    onRetry: loadTransactions,
-                  )
-                : RefreshIndicator(
-                    onRefresh: loadTransactions,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
-                      child: HistoryComponent(
-                        transactions: transactions,
-                        shrinkWrap: false,
-                        physics: const AlwaysScrollableScrollPhysics(),
-                      ),
-                    ),
+            ? AppErrorState(message: errorMessage!, onRetry: loadTransactions)
+            : RefreshIndicator(
+                onRefresh: loadTransactions,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
+                  child: HistoryComponent(
+                    transactions: transactions,
+                    shrinkWrap: false,
+                    physics: const AlwaysScrollableScrollPhysics(),
                   ),
+                ),
+              ),
       ),
     );
   }

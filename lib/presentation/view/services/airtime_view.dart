@@ -10,7 +10,7 @@ import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 import 'package:tranzgoo/utils/widget/app_textfield.dart';
 
 class AirtimeScreen extends StatefulWidget {
-  const AirtimeScreen({Key? key}) : super(key: key);
+  const AirtimeScreen({super.key});
 
   @override
   State<AirtimeScreen> createState() => _AirtimeScreenState();
@@ -120,11 +120,14 @@ class _AirtimeScreenState extends State<AirtimeScreen> {
                 : 'Your airtime purchase has been completed. New balance: NGN $balance',
             details: [
               ReceiptLineItem(
-                  label: 'Amount',
-                  value: 'NGN ${amountController.text.trim()}'),
+                label: 'Amount',
+                value: 'NGN ${amountController.text.trim()}',
+              ),
               ReceiptLineItem(label: 'Network', value: networkName ?? ''),
               ReceiptLineItem(
-                  label: 'Phone', value: phoneController.text.trim()),
+                label: 'Phone',
+                value: phoneController.text.trim(),
+              ),
               if (transaction['reference'] != null)
                 ReceiptLineItem(
                   label: 'Reference',
@@ -132,8 +135,9 @@ class _AirtimeScreenState extends State<AirtimeScreen> {
                 ),
             ],
             primaryActionLabel: transactionId == null ? null : 'View Receipt',
-            primaryActionRoute:
-                transactionId == null ? null : AppRoutes.transactionDetailView,
+            primaryActionRoute: transactionId == null
+                ? null
+                : AppRoutes.transactionDetailView,
             primaryActionArguments: transactionId == null
                 ? null
                 : TransactionDetailArguments(
@@ -147,9 +151,9 @@ class _AirtimeScreenState extends State<AirtimeScreen> {
   }
 
   void showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -160,46 +164,46 @@ class _AirtimeScreenState extends State<AirtimeScreen> {
       child: isLoading
           ? const SizedBox(height: 260, child: AppLoadingState())
           : errorMessage != null
-              ? SizedBox(
-                  height: 260,
-                  child: AppErrorState(
-                    message: errorMessage!,
-                    onRetry: loadNetworks,
-                  ),
-                )
-              : Column(
-                  children: [
-                    ServiceDropdown(
-                      hintText: 'Network',
-                      value: selectedNetwork,
-                      items: networks,
-                      itemLabel: (item) => item['name']?.toString() ?? '',
-                      onChanged: (value) {
-                        setState(() {
-                          selectedNetwork = value;
-                        });
-                      },
-                    ),
-                    AppTextField(
-                      controller: phoneController,
-                      hintText: 'Phone Number',
-                      keyboardType: TextInputType.phone,
-                      icon: Image.asset('assets/icons/phoneIcon.png'),
-                    ),
-                    AppTextField(
-                      controller: amountController,
-                      hintText: 'Amount',
-                      keyboardType: TextInputType.number,
-                      icon: const Icon(Icons.payments),
-                    ),
-                    AppButton(
-                      onPressed: reviewAirtime,
-                      label: 'Review Airtime',
-                      isText: true,
-                      width: double.infinity,
-                    ),
-                  ],
+          ? SizedBox(
+              height: 260,
+              child: AppErrorState(
+                message: errorMessage!,
+                onRetry: loadNetworks,
+              ),
+            )
+          : Column(
+              children: [
+                ServiceDropdown(
+                  hintText: 'Network',
+                  value: selectedNetwork,
+                  items: networks,
+                  itemLabel: (item) => item['name']?.toString() ?? '',
+                  onChanged: (value) {
+                    setState(() {
+                      selectedNetwork = value;
+                    });
+                  },
                 ),
+                AppTextField(
+                  controller: phoneController,
+                  hintText: 'Phone Number',
+                  keyboardType: TextInputType.phone,
+                  icon: Image.asset('assets/icons/phoneIcon.png'),
+                ),
+                AppTextField(
+                  controller: amountController,
+                  hintText: 'Amount',
+                  keyboardType: TextInputType.number,
+                  icon: const Icon(Icons.payments),
+                ),
+                AppButton(
+                  onPressed: reviewAirtime,
+                  label: 'Review Airtime',
+                  isText: true,
+                  width: double.infinity,
+                ),
+              ],
+            ),
     );
   }
 }

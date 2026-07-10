@@ -16,7 +16,7 @@ class AppButton extends StatelessWidget {
   final double? width;
 
   const AppButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     this.backgroundColor,
     this.widget,
@@ -26,7 +26,7 @@ class AppButton extends StatelessWidget {
     this.labelColor,
     this.width,
     this.labelFontSize,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +37,9 @@ class AppButton extends StatelessWidget {
           0.0,
           MediaQuery.sizeOf(context).width - 56,
         );
-        final constrainedWidth =
-            constraints.hasBoundedWidth ? constraints.maxWidth : 360.0;
+        final constrainedWidth = constraints.hasBoundedWidth
+            ? constraints.maxWidth
+            : 360.0;
         final maxWidth = math.min(constrainedWidth, viewportSafeWidth);
         final effectiveWidth = requestedWidth.isFinite
             ? requestedWidth.clamp(0.0, maxWidth)
@@ -52,13 +53,13 @@ class AppButton extends StatelessWidget {
             child: ElevatedButton(
               onPressed: isLoading ? () {} : onPressed,
               style: ButtonStyle(
-                shape: MaterialStateProperty.all<OutlinedBorder>(
+                shape: WidgetStateProperty.all<OutlinedBorder>(
                   RoundedRectangleBorder(
                     side: const BorderSide(color: AppColors.primaryColor),
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                backgroundColor: MaterialStateProperty.all<Color>(
+                backgroundColor: WidgetStateProperty.all<Color>(
                   backgroundColor ?? AppColors.primaryColor,
                 ),
               ),
@@ -72,15 +73,15 @@ class AppButton extends StatelessWidget {
                       ),
                     )
                   : isText
-                      ? Text(
-                          label,
-                          textAlign: TextAlign.center,
-                          style: AppText.extraBold.copyWith(
-                            fontSize: labelFontSize ?? 16,
-                            color: labelColor ?? Colors.white,
-                          ),
-                        )
-                      : widget,
+                  ? Text(
+                      label,
+                      textAlign: TextAlign.center,
+                      style: AppText.extraBold.copyWith(
+                        fontSize: labelFontSize ?? 16,
+                        color: labelColor ?? Colors.white,
+                      ),
+                    )
+                  : widget,
             ),
           ),
         );

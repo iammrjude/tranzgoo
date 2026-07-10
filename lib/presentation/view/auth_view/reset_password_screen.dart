@@ -10,7 +10,7 @@ import 'package:tranzgoo/utils/widget/app_textfield.dart';
 import 'package:tranzgoo/utils/widget/responsive_layout.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
-  const ResetPasswordScreen({Key? key}) : super(key: key);
+  const ResetPasswordScreen({super.key});
 
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
@@ -85,9 +85,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   }
 
   void showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override

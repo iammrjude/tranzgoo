@@ -9,7 +9,7 @@ import 'package:tranzgoo/utils/widget/app_clickable_surface.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  const ProfileScreen({super.key});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -103,15 +103,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     if (isLoading) {
       return const Scaffold(
-          body: AppLoadingState(message: 'Loading profile...'));
+        body: AppLoadingState(message: 'Loading profile...'),
+      );
     }
 
     if (errorMessage != null) {
       return Scaffold(
-        body: AppErrorState(
-          message: errorMessage!,
-          onRetry: loadProfile,
-        ),
+        body: AppErrorState(message: errorMessage!, onRetry: loadProfile),
       );
     }
 
@@ -123,18 +121,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: goBack,
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.black,
-            size: 30,
-          ),
+          icon: const Icon(Icons.arrow_back, color: Colors.black, size: 30),
         ),
         title: Text(
           'Profile',
-          style: AppText.extraBold.copyWith(
-            fontSize: 28,
-            letterSpacing: 2,
-          ),
+          style: AppText.extraBold.copyWith(fontSize: 28, letterSpacing: 2),
         ),
         centerTitle: true,
         actions: [
@@ -146,7 +137,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               color: AppColors.primaryColor,
               size: 30,
             ),
-          )
+          ),
         ],
       ),
       body: RefreshIndicator(
@@ -369,7 +360,7 @@ Widget settingsWidget({
                     ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -379,7 +370,7 @@ Widget settingsWidget({
               Icons.arrow_forward_ios_rounded,
               size: 16,
               color: AppColors.primaryColor,
-            )
+            ),
       ],
     ),
   );

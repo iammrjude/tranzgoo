@@ -9,11 +9,11 @@ class AccountCard extends StatefulWidget {
   final VoidCallback? onFund;
 
   const AccountCard({
-    Key? key,
+    super.key,
     this.balance = '0.00',
     this.onSend,
     this.onFund,
-  }) : super(key: key);
+  });
 
   @override
   State<AccountCard> createState() => _AccountCardState();
@@ -45,8 +45,10 @@ class _AccountCardState extends State<AccountCard> {
         children: [
           Text(
             'Account Balance',
-            style: AppText.extraBold
-                .copyWith(color: AppColors.whiteColor, fontSize: 16),
+            style: AppText.extraBold.copyWith(
+              color: AppColors.whiteColor,
+              fontSize: 16,
+            ),
           ),
           Row(
             children: [
@@ -55,18 +57,17 @@ class _AccountCardState extends State<AccountCard> {
                   balanceText,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppText.extraBold
-                      .copyWith(color: AppColors.whiteColor, fontSize: 20),
+                  style: AppText.extraBold.copyWith(
+                    color: AppColors.whiteColor,
+                    fontSize: 20,
+                  ),
                 ),
               ),
               const SizedBox(width: 10),
               IconButton(
                 onPressed: toggleBalanceVisibility,
                 tooltip: isBalanceVisible ? 'Hide balance' : 'Show balance',
-                constraints: const BoxConstraints(
-                  minHeight: 32,
-                  minWidth: 32,
-                ),
+                constraints: const BoxConstraints(minHeight: 32, minWidth: 32),
                 padding: EdgeInsets.zero,
                 icon: Icon(
                   isBalanceVisible ? Icons.visibility : Icons.visibility_off,
@@ -81,7 +82,8 @@ class _AccountCardState extends State<AccountCard> {
             children: [
               Expanded(
                 child: _AccountActionButton(
-                  onTap: widget.onSend ??
+                  onTap:
+                      widget.onSend ??
                       () => Navigator.pushNamed(context, '/sendView'),
                   semanticLabel: 'Send money',
                   icon: Image.asset('assets/icons/sendIcon.png'),
@@ -91,7 +93,8 @@ class _AccountCardState extends State<AccountCard> {
               const SizedBox(width: 12),
               Expanded(
                 child: _AccountActionButton(
-                  onTap: widget.onFund ??
+                  onTap:
+                      widget.onFund ??
                       () => Navigator.pushNamed(context, '/fundAccountView'),
                   semanticLabel: 'Fund account',
                   icon: Image.asset('assets/icons/addIcon.png'),
@@ -99,7 +102,7 @@ class _AccountCardState extends State<AccountCard> {
                 ),
               ),
             ],
-          )
+          ),
         ],
       ),
     );

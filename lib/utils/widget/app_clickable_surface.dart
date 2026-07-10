@@ -13,7 +13,7 @@ class AppClickableSurface extends StatelessWidget {
   final String? semanticLabel;
 
   const AppClickableSurface({
-    Key? key,
+    super.key,
     required this.child,
     required this.onTap,
     required this.color,
@@ -24,7 +24,7 @@ class AppClickableSurface extends StatelessWidget {
     this.height,
     this.width,
     this.semanticLabel,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

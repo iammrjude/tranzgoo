@@ -5,7 +5,7 @@ import 'package:tranzgoo/utils/widget/app_button.dart';
 import 'package:tranzgoo/utils/widget/responsive_layout.dart';
 
 class CreateAccountScreen extends StatefulWidget {
-  const CreateAccountScreen({Key? key}) : super(key: key);
+  const CreateAccountScreen({super.key});
 
   @override
   State<CreateAccountScreen> createState() => _CreateAccountScreenState();
@@ -27,9 +27,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               height: 60,
               width: 110,
             ),
-            const SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
             AppButton(
               onPressed: () {},
               label: '',
@@ -42,9 +40,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     width: 18,
                     height: 18,
                   ),
-                  const SizedBox(
-                    width: 7,
-                  ),
+                  const SizedBox(width: 7),
                   Expanded(
                     child: Text(
                       'Continue with Goggle',
@@ -55,13 +51,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         color: AppColors.primaryColor,
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
-            const SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
             AppButton(
               onPressed: () {},
               label: '',
@@ -74,9 +68,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     width: 18,
                     height: 18,
                   ),
-                  const SizedBox(
-                    width: 7,
-                  ),
+                  const SizedBox(width: 7),
                   Expanded(
                     child: Text(
                       'Continue with Apple',
@@ -87,13 +79,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         color: AppColors.primaryColor,
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
-            const SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
             AppButton(
               onPressed: () {},
               label: '',
@@ -106,9 +96,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     width: 18,
                     height: 18,
                   ),
-                  const SizedBox(
-                    width: 7,
-                  ),
+                  const SizedBox(width: 7),
                   Expanded(
                     child: Text(
                       'Continue with Microsoft',
@@ -119,13 +107,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                         color: AppColors.primaryColor,
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
-            const SizedBox(
-              height: 20,
-            ),
+            const SizedBox(height: 20),
             AppButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/registerView');

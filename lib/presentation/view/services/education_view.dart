@@ -9,7 +9,7 @@ import 'package:tranzgoo/utils/widget/app_button.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 
 class EducationScreen extends StatefulWidget {
-  const EducationScreen({Key? key}) : super(key: key);
+  const EducationScreen({super.key});
 
   @override
   State<EducationScreen> createState() => _EducationScreenState();
@@ -84,8 +84,9 @@ class _EducationScreenState extends State<EducationScreen> {
         amountLabel: 'NGN $productAmount',
         details: [ReceiptLineItem(label: 'Product', value: productName)],
         onConfirm: () async {
-          final result =
-              await _apiService.buyEducationProduct(selectedProduct!);
+          final result = await _apiService.buyEducationProduct(
+            selectedProduct!,
+          );
           final transaction = result['transaction'] is Map<String, dynamic>
               ? result['transaction'] as Map<String, dynamic>
               : <String, dynamic>{};
@@ -112,8 +113,9 @@ class _EducationScreenState extends State<EducationScreen> {
                 ),
             ],
             primaryActionLabel: transactionId == null ? null : 'View Receipt',
-            primaryActionRoute:
-                transactionId == null ? null : AppRoutes.transactionDetailView,
+            primaryActionRoute: transactionId == null
+                ? null
+                : AppRoutes.transactionDetailView,
             primaryActionArguments: transactionId == null
                 ? null
                 : TransactionDetailArguments(
@@ -127,9 +129,9 @@ class _EducationScreenState extends State<EducationScreen> {
   }
 
   void showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -140,38 +142,38 @@ class _EducationScreenState extends State<EducationScreen> {
       child: isLoading
           ? const SizedBox(height: 260, child: AppLoadingState())
           : errorMessage != null
-              ? SizedBox(
-                  height: 260,
-                  child: AppErrorState(
-                    message: errorMessage!,
-                    onRetry: loadProducts,
-                  ),
-                )
-              : Column(
-                  children: [
-                    ServiceDropdown(
-                      hintText: 'Product',
-                      value: selectedProduct,
-                      items: products,
-                      itemLabel: (item) {
-                        final name = item['name']?.toString() ?? '';
-                        final amount = item['amount']?.toString() ?? '';
-                        return amount.isEmpty ? name : '$name - NGN $amount';
-                      },
-                      onChanged: (value) {
-                        setState(() {
-                          selectedProduct = value;
-                        });
-                      },
-                    ),
-                    AppButton(
-                      onPressed: reviewProduct,
-                      label: 'Review Product',
-                      isText: true,
-                      width: double.infinity,
-                    ),
-                  ],
+          ? SizedBox(
+              height: 260,
+              child: AppErrorState(
+                message: errorMessage!,
+                onRetry: loadProducts,
+              ),
+            )
+          : Column(
+              children: [
+                ServiceDropdown(
+                  hintText: 'Product',
+                  value: selectedProduct,
+                  items: products,
+                  itemLabel: (item) {
+                    final name = item['name']?.toString() ?? '';
+                    final amount = item['amount']?.toString() ?? '';
+                    return amount.isEmpty ? name : '$name - NGN $amount';
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      selectedProduct = value;
+                    });
+                  },
                 ),
+                AppButton(
+                  onPressed: reviewProduct,
+                  label: 'Review Product',
+                  isText: true,
+                  width: double.infinity,
+                ),
+              ],
+            ),
     );
   }
 }

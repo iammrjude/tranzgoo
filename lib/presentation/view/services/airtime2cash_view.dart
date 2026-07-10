@@ -9,7 +9,7 @@ import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 import 'package:tranzgoo/utils/widget/app_textfield.dart';
 
 class Airtime2cash extends StatefulWidget {
-  const Airtime2cash({Key? key}) : super(key: key);
+  const Airtime2cash({super.key});
 
   @override
   State<Airtime2cash> createState() => _Airime2cashState();
@@ -85,8 +85,9 @@ class _Airime2cashState extends State<Airtime2cash> {
     });
 
     try {
-      final data =
-          await _apiService.getAirtimeToCashQuote(amountController.text);
+      final data = await _apiService.getAirtimeToCashQuote(
+        amountController.text,
+      );
 
       if (!mounted) {
         return;
@@ -159,10 +160,13 @@ class _Airime2cashState extends State<Airtime2cash> {
             details: [
               ReceiptLineItem(label: 'Network', value: networkName ?? ''),
               ReceiptLineItem(
-                  label: 'Phone', value: phoneController.text.trim()),
+                label: 'Phone',
+                value: phoneController.text.trim(),
+              ),
               ReceiptLineItem(
-                  label: 'Amount',
-                  value: 'NGN ${amountController.text.trim()}'),
+                label: 'Amount',
+                value: 'NGN ${amountController.text.trim()}',
+              ),
               if (request['requestCode'] != null)
                 ReceiptLineItem(
                   label: 'Request Code',
@@ -170,8 +174,9 @@ class _Airime2cashState extends State<Airtime2cash> {
                 ),
             ],
             primaryActionLabel: requestId == null ? null : 'View Request',
-            primaryActionRoute:
-                requestId == null ? null : AppRoutes.airtimeToCashDetailView,
+            primaryActionRoute: requestId == null
+                ? null
+                : AppRoutes.airtimeToCashDetailView,
             primaryActionArguments: requestId,
           );
         },
@@ -180,9 +185,9 @@ class _Airime2cashState extends State<Airtime2cash> {
   }
 
   void showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -193,71 +198,71 @@ class _Airime2cashState extends State<Airtime2cash> {
       child: isLoading
           ? const SizedBox(height: 260, child: AppLoadingState())
           : errorMessage != null
-              ? SizedBox(
-                  height: 260,
-                  child: AppErrorState(
-                    message: errorMessage!,
-                    onRetry: loadNetworks,
+          ? SizedBox(
+              height: 260,
+              child: AppErrorState(
+                message: errorMessage!,
+                onRetry: loadNetworks,
+              ),
+            )
+          : Column(
+              children: [
+                ServiceDropdown(
+                  hintText: 'Network',
+                  value: selectedNetwork,
+                  items: networks,
+                  itemLabel: (item) => item['name']?.toString() ?? '',
+                  onChanged: (value) {
+                    setState(() {
+                      selectedNetwork = value;
+                    });
+                  },
+                ),
+                AppTextField(
+                  controller: phoneController,
+                  hintText: 'Phone Number',
+                  keyboardType: TextInputType.phone,
+                  icon: Image.asset('assets/icons/phoneIcon.png'),
+                ),
+                AppTextField(
+                  controller: amountController,
+                  hintText: 'Airtime Amount',
+                  keyboardType: TextInputType.number,
+                  icon: const Icon(Icons.payments),
+                ),
+                if (quote != null)
+                  ServiceResultCard(
+                    title: 'Quote',
+                    lines: [
+                      'Airtime: NGN ${quote!['amount'] ?? ''}',
+                      'Wallet payout: NGN ${quote!['payoutAmount'] ?? ''}',
+                      'Rate: ${quote!['rate'] ?? ''}',
+                    ],
                   ),
-                )
-              : Column(
+                Row(
                   children: [
-                    ServiceDropdown(
-                      hintText: 'Network',
-                      value: selectedNetwork,
-                      items: networks,
-                      itemLabel: (item) => item['name']?.toString() ?? '',
-                      onChanged: (value) {
-                        setState(() {
-                          selectedNetwork = value;
-                        });
-                      },
-                    ),
-                    AppTextField(
-                      controller: phoneController,
-                      hintText: 'Phone Number',
-                      keyboardType: TextInputType.phone,
-                      icon: Image.asset('assets/icons/phoneIcon.png'),
-                    ),
-                    AppTextField(
-                      controller: amountController,
-                      hintText: 'Airtime Amount',
-                      keyboardType: TextInputType.number,
-                      icon: const Icon(Icons.payments),
-                    ),
-                    if (quote != null)
-                      ServiceResultCard(
-                        title: 'Quote',
-                        lines: [
-                          'Airtime: NGN ${quote!['amount'] ?? ''}',
-                          'Wallet payout: NGN ${quote!['payoutAmount'] ?? ''}',
-                          'Rate: ${quote!['rate'] ?? ''}',
-                        ],
+                    Expanded(
+                      child: AppButton(
+                        onPressed: getQuote,
+                        label: 'Get Quote',
+                        isText: true,
+                        isLoading: isQuoting,
+                        width: double.infinity,
                       ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: AppButton(
-                            onPressed: getQuote,
-                            label: 'Get Quote',
-                            isText: true,
-                            isLoading: isQuoting,
-                            width: double.infinity,
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: AppButton(
-                            onPressed: reviewRequest,
-                            label: 'Review',
-                            isText: true,
-                            width: double.infinity,
-                          ),
-                        ),
-                      ],
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: AppButton(
+                        onPressed: reviewRequest,
+                        label: 'Review',
+                        isText: true,
+                        width: double.infinity,
+                      ),
                     ),
                   ],
                 ),
+              ],
+            ),
     );
   }
 }

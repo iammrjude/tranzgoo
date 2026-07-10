@@ -10,7 +10,7 @@ import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 import 'package:tranzgoo/utils/widget/app_textfield.dart';
 
 class CableScreen extends StatefulWidget {
-  const CableScreen({Key? key}) : super(key: key);
+  const CableScreen({super.key});
 
   @override
   State<CableScreen> createState() => _CableScreenState();
@@ -51,8 +51,9 @@ class _CableScreenState extends State<CableScreen> {
       final firstProvider = loadedProviders.isEmpty
           ? null
           : loadedProviders.first['id']?.toString();
-      final loadedPackages =
-          await _apiService.getCablePackages(provider: firstProvider ?? '');
+      final loadedPackages = await _apiService.getCablePackages(
+        provider: firstProvider ?? '',
+      );
 
       if (!mounted) {
         return;
@@ -90,8 +91,9 @@ class _CableScreenState extends State<CableScreen> {
       customer = null;
     });
 
-    final loadedPackages =
-        await _apiService.getCablePackages(provider: provider ?? '');
+    final loadedPackages = await _apiService.getCablePackages(
+      provider: provider ?? '',
+    );
 
     if (!mounted) {
       return;
@@ -207,8 +209,9 @@ class _CableScreenState extends State<CableScreen> {
                 ),
             ],
             primaryActionLabel: transactionId == null ? null : 'View Receipt',
-            primaryActionRoute:
-                transactionId == null ? null : AppRoutes.transactionDetailView,
+            primaryActionRoute: transactionId == null
+                ? null
+                : AppRoutes.transactionDetailView,
             primaryActionArguments: transactionId == null
                 ? null
                 : TransactionDetailArguments(
@@ -222,9 +225,9 @@ class _CableScreenState extends State<CableScreen> {
   }
 
   void showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -235,80 +238,77 @@ class _CableScreenState extends State<CableScreen> {
       child: isLoading
           ? const SizedBox(height: 260, child: AppLoadingState())
           : errorMessage != null
-              ? SizedBox(
-                  height: 260,
-                  child: AppErrorState(
-                    message: errorMessage!,
-                    onRetry: loadData,
+          ? SizedBox(
+              height: 260,
+              child: AppErrorState(message: errorMessage!, onRetry: loadData),
+            )
+          : Column(
+              children: [
+                ServiceDropdown(
+                  hintText: 'Provider',
+                  value: selectedProvider,
+                  items: providers,
+                  itemLabel: (item) => item['name']?.toString() ?? '',
+                  onChanged: (value) {
+                    loadPackages(value).catchError((_) {
+                      showMessage('Unable to load packages.');
+                    });
+                  },
+                ),
+                ServiceDropdown(
+                  hintText: 'Package',
+                  value: selectedPackage,
+                  items: packages,
+                  itemLabel: (item) {
+                    final name = item['name']?.toString() ?? '';
+                    final amount = item['amount']?.toString() ?? '';
+                    return amount.isEmpty ? name : '$name - NGN $amount';
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      selectedPackage = value;
+                    });
+                  },
+                ),
+                AppTextField(
+                  controller: smartCardController,
+                  hintText: 'Smart Card Number',
+                  keyboardType: TextInputType.number,
+                  icon: const Icon(Icons.credit_card),
+                ),
+                if (customer != null)
+                  ServiceResultCard(
+                    title: 'Customer Found',
+                    lines: [
+                      'Name: ${customer!['name'] ?? ''}',
+                      'Provider: ${customer!['provider'] ?? ''}',
+                      'Card: ${customer!['smartCardNumber'] ?? ''}',
+                    ],
                   ),
-                )
-              : Column(
+                Row(
                   children: [
-                    ServiceDropdown(
-                      hintText: 'Provider',
-                      value: selectedProvider,
-                      items: providers,
-                      itemLabel: (item) => item['name']?.toString() ?? '',
-                      onChanged: (value) {
-                        loadPackages(value).catchError((_) {
-                          showMessage('Unable to load packages.');
-                        });
-                      },
-                    ),
-                    ServiceDropdown(
-                      hintText: 'Package',
-                      value: selectedPackage,
-                      items: packages,
-                      itemLabel: (item) {
-                        final name = item['name']?.toString() ?? '';
-                        final amount = item['amount']?.toString() ?? '';
-                        return amount.isEmpty ? name : '$name - NGN $amount';
-                      },
-                      onChanged: (value) {
-                        setState(() {
-                          selectedPackage = value;
-                        });
-                      },
-                    ),
-                    AppTextField(
-                      controller: smartCardController,
-                      hintText: 'Smart Card Number',
-                      keyboardType: TextInputType.number,
-                      icon: const Icon(Icons.credit_card),
-                    ),
-                    if (customer != null)
-                      ServiceResultCard(
-                        title: 'Customer Found',
-                        lines: [
-                          'Name: ${customer!['name'] ?? ''}',
-                          'Provider: ${customer!['provider'] ?? ''}',
-                          'Card: ${customer!['smartCardNumber'] ?? ''}',
-                        ],
+                    Expanded(
+                      child: AppButton(
+                        onPressed: validateCustomer,
+                        label: 'Validate',
+                        isText: true,
+                        isLoading: isValidating,
+                        width: double.infinity,
                       ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: AppButton(
-                            onPressed: validateCustomer,
-                            label: 'Validate',
-                            isText: true,
-                            isLoading: isValidating,
-                            width: double.infinity,
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: AppButton(
-                            onPressed: reviewCable,
-                            label: 'Review',
-                            isText: true,
-                            width: double.infinity,
-                          ),
-                        ),
-                      ],
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: AppButton(
+                        onPressed: reviewCable,
+                        label: 'Review',
+                        isText: true,
+                        width: double.infinity,
+                      ),
                     ),
                   ],
                 ),
+              ],
+            ),
     );
   }
 }

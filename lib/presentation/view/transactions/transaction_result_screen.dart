@@ -7,7 +7,7 @@ import 'package:tranzgoo/utils/widget/app_button.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 
 class TransactionResultScreen extends StatelessWidget {
-  const TransactionResultScreen({Key? key}) : super(key: key);
+  const TransactionResultScreen({super.key});
 
   TransactionResultArguments? _args(BuildContext context) {
     final routeArgs = ModalRoute.of(context)?.settings.arguments;
@@ -44,7 +44,7 @@ class TransactionResultScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: result.isSuccess
                       ? AppColors.primaryLightColor
-                      : Colors.red.withOpacity(0.12),
+                      : Colors.red.withValues(alpha: 0.12),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -78,8 +78,9 @@ class TransactionResultScreen extends StatelessWidget {
                           item.label,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style:
-                              AppText.mediumStyle.copyWith(letterSpacing: 0.09),
+                          style: AppText.mediumStyle.copyWith(
+                            letterSpacing: 0.09,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -87,8 +88,9 @@ class TransactionResultScreen extends StatelessWidget {
                         child: Text(
                           item.value,
                           textAlign: TextAlign.right,
-                          style:
-                              AppText.extraBold.copyWith(letterSpacing: 0.09),
+                          style: AppText.extraBold.copyWith(
+                            letterSpacing: 0.09,
+                          ),
                         ),
                       ),
                     ],

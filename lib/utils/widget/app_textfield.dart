@@ -15,7 +15,7 @@ class AppTextField extends StatefulWidget {
   final TextInputType? keyboardType;
   final Function(String)? validate;
   const AppTextField({
-    Key? key,
+    super.key,
     required this.controller,
     this.textCenter = false,
     this.icon,
@@ -25,7 +25,7 @@ class AppTextField extends StatefulWidget {
     this.width,
     this.height,
     this.keyboardType,
-  }) : super(key: key);
+  });
 
   @override
   State<AppTextField> createState() => _AppTextFieldState();
@@ -42,8 +42,9 @@ class _AppTextFieldState extends State<AppTextField> {
           0.0,
           MediaQuery.sizeOf(context).width - 56,
         );
-        final constrainedWidth =
-            constraints.hasBoundedWidth ? constraints.maxWidth : 360.0;
+        final constrainedWidth = constraints.hasBoundedWidth
+            ? constraints.maxWidth
+            : 360.0;
         final maxWidth = math.min(constrainedWidth, viewportSafeWidth);
         final effectiveWidth = requestedWidth.isFinite
             ? requestedWidth.clamp(0.0, maxWidth)
@@ -72,11 +73,15 @@ class _AppTextFieldState extends State<AppTextField> {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
-              hintStyle: AppText.extraBold
-                  .copyWith(color: AppColors.primaryColor, fontSize: 14),
+              hintStyle: AppText.extraBold.copyWith(
+                color: AppColors.primaryColor,
+                fontSize: 14,
+              ),
               enabledBorder: OutlineInputBorder(
                 borderSide: const BorderSide(
-                    color: AppColors.primaryColor, style: BorderStyle.solid),
+                  color: AppColors.primaryColor,
+                  style: BorderStyle.solid,
+                ),
                 borderRadius: BorderRadius.circular(12),
               ),
               prefixIcon: widget.icon == null
@@ -97,11 +102,9 @@ class _AppTextFieldState extends State<AppTextField> {
               suffixIcon: widget.isObscure
                   ? IconButton(
                       onPressed: () {
-                        setState(
-                          () {
-                            isPasswordVisible = !isPasswordVisible;
-                          },
-                        );
+                        setState(() {
+                          isPasswordVisible = !isPasswordVisible;
+                        });
                       },
                       icon: isPasswordVisible
                           ? const Icon(

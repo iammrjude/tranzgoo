@@ -6,7 +6,7 @@ import 'package:tranzgoo/utils/theme/app_style.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 
 class LegalScreen extends StatefulWidget {
-  const LegalScreen({Key? key}) : super(key: key);
+  const LegalScreen({super.key});
 
   @override
   State<LegalScreen> createState() => _LegalScreenState();
@@ -69,56 +69,52 @@ class _LegalScreenState extends State<LegalScreen> {
         child: isLoading
             ? const AppLoadingState(message: 'Loading legal documents...')
             : errorMessage != null
-                ? AppErrorState(
-                    message: errorMessage!,
-                    onRetry: loadDocuments,
-                  )
-                : RefreshIndicator(
-                    onRefresh: loadDocuments,
-                    color: AppColors.primaryColor,
-                    child: ListView(
-                      padding: const EdgeInsets.fromLTRB(24, 20, 24, 30),
-                      children: [
-                        appSectionTitle('Legal Documents'),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Review TranzGOO policies and account rules.',
-                          style:
-                              AppText.mediumStyle.copyWith(letterSpacing: 0.09),
-                        ),
-                        const SizedBox(height: 20),
-                        if (documents.isEmpty)
-                          const AppEmptyState(
-                            title: 'No documents',
-                            message: 'Legal documents will appear here.',
-                          )
-                        else
-                          ...documents.map(
-                            (document) => AppInfoCard(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    document['title']?.toString() ?? '',
-                                    style: AppText.extraBold.copyWith(
-                                      color: AppColors.primaryColor,
-                                      letterSpacing: 0.09,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 6),
-                                  Text(
-                                    document['summary']?.toString() ?? '',
-                                    style: AppText.mediumStyle.copyWith(
-                                      letterSpacing: 0.09,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                      ],
+            ? AppErrorState(message: errorMessage!, onRetry: loadDocuments)
+            : RefreshIndicator(
+                onRefresh: loadDocuments,
+                color: AppColors.primaryColor,
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(24, 20, 24, 30),
+                  children: [
+                    appSectionTitle('Legal Documents'),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Review TranzGOO policies and account rules.',
+                      style: AppText.mediumStyle.copyWith(letterSpacing: 0.09),
                     ),
-                  ),
+                    const SizedBox(height: 20),
+                    if (documents.isEmpty)
+                      const AppEmptyState(
+                        title: 'No documents',
+                        message: 'Legal documents will appear here.',
+                      )
+                    else
+                      ...documents.map(
+                        (document) => AppInfoCard(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                document['title']?.toString() ?? '',
+                                style: AppText.extraBold.copyWith(
+                                  color: AppColors.primaryColor,
+                                  letterSpacing: 0.09,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                document['summary']?.toString() ?? '',
+                                style: AppText.mediumStyle.copyWith(
+                                  letterSpacing: 0.09,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
       ),
     );
   }

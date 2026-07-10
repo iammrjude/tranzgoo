@@ -9,7 +9,7 @@ import 'package:tranzgoo/utils/widget/app_textfield.dart';
 import 'package:tranzgoo/utils/widget/responsive_layout.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -42,10 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      await _authService.login(
-        email: email,
-        password: password,
-      );
+      await _authService.login(email: email, password: password);
 
       if (!mounted) {
         return;
@@ -76,9 +73,9 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -96,29 +93,24 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 60,
               width: 110,
             ),
-            Text(
-              'Login',
-              style: AppText.extraBold.copyWith(fontSize: 24),
-            ),
-            const SizedBox(
-              height: 13,
+            Text('Login', style: AppText.extraBold.copyWith(fontSize: 24)),
+            const SizedBox(height: 13),
+            AppTextField(
+              controller: emailController,
+              icon: Image.asset('assets/icons/emailIcon.png'),
+              hintText: 'Email',
             ),
             AppTextField(
-                controller: emailController,
-                icon: Image.asset('assets/icons/emailIcon.png'),
-                hintText: 'Email'),
-            AppTextField(
-                controller: passwordController,
-                isObscure: true,
-                icon: Image.asset('assets/icons/passwordIcon.png'),
-                hintText: 'Password'),
+              controller: passwordController,
+              isObscure: true,
+              icon: Image.asset('assets/icons/passwordIcon.png'),
+              hintText: 'Password',
+            ),
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
-                onPressed: () => Navigator.pushNamed(
-                  context,
-                  AppRoutes.forgotPasswordView,
-                ),
+                onPressed: () =>
+                    Navigator.pushNamed(context, AppRoutes.forgotPasswordView),
                 child: Text(
                   'Forgot password?',
                   style: AppText.extraBold.copyWith(
@@ -128,9 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 10),
             AppButton(
               onPressed: login,
               label: 'Login',
@@ -138,10 +128,8 @@ class _LoginScreenState extends State<LoginScreen> {
               isLoading: isLoading,
               labelColor: AppColors.whiteColor,
             ),
-            const SizedBox(
-              height: 20,
-            ),
-            Image.asset('assets/icons/fingerprint.png')
+            const SizedBox(height: 20),
+            Image.asset('assets/icons/fingerprint.png'),
           ],
         ),
       ),

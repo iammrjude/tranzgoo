@@ -4,7 +4,7 @@ class TranzgooApiService {
   final ApiClient _apiClient;
 
   TranzgooApiService({ApiClient? apiClient})
-      : _apiClient = apiClient ?? ApiClient();
+    : _apiClient = apiClient ?? ApiClient();
 
   Future<Map<String, dynamic>> getUser() async {
     final response = await _apiClient.get('/api/user/me', authenticated: true);
@@ -16,15 +16,11 @@ class TranzgooApiService {
     required String email,
     required String phone,
   }) async {
-    final response = await _apiClient.patch(
-      '/api/user/me',
-      {
-        'fullName': fullName.trim(),
-        'email': email.trim(),
-        'phone': phone.trim(),
-      },
-      authenticated: true,
-    );
+    final response = await _apiClient.patch('/api/user/me', {
+      'fullName': fullName.trim(),
+      'email': email.trim(),
+      'phone': phone.trim(),
+    }, authenticated: true);
 
     return _map(response, 'user');
   }
@@ -34,20 +30,18 @@ class TranzgooApiService {
     required String newPassword,
     required String confirmPassword,
   }) async {
-    await _apiClient.post(
-      '/api/auth/change-password',
-      {
-        'currentPassword': currentPassword,
-        'newPassword': newPassword,
-        'confirmPassword': confirmPassword,
-      },
-      authenticated: true,
-    );
+    await _apiClient.post('/api/auth/change-password', {
+      'currentPassword': currentPassword,
+      'newPassword': newPassword,
+      'confirmPassword': confirmPassword,
+    }, authenticated: true);
   }
 
   Future<Map<String, dynamic>> getSecurity() async {
-    final response =
-        await _apiClient.get('/api/user/security', authenticated: true);
+    final response = await _apiClient.get(
+      '/api/user/security',
+      authenticated: true,
+    );
     return _map(response, 'security');
   }
 
@@ -69,15 +63,11 @@ class TranzgooApiService {
     required String amount,
     String note = '',
   }) async {
-    final response = await _apiClient.post(
-      '/api/wallet/transfer',
-      {
-        'receiverTranzgoId': receiverTranzgoId.trim(),
-        'amount': amount.trim(),
-        'note': note.trim(),
-      },
-      authenticated: true,
-    );
+    final response = await _apiClient.post('/api/wallet/transfer', {
+      'receiverTranzgoId': receiverTranzgoId.trim(),
+      'amount': amount.trim(),
+      'note': note.trim(),
+    }, authenticated: true);
 
     return _data(response);
   }
@@ -127,15 +117,11 @@ class TranzgooApiService {
     required String phone,
     required String amount,
   }) async {
-    final response = await _apiClient.post(
-      '/api/services/airtime/purchase',
-      {
-        'network': network,
-        'phone': phone.trim(),
-        'amount': amount.trim(),
-      },
-      authenticated: true,
-    );
+    final response = await _apiClient.post('/api/services/airtime/purchase', {
+      'network': network,
+      'phone': phone.trim(),
+      'amount': amount.trim(),
+    }, authenticated: true);
 
     return _data(response);
   }
@@ -163,14 +149,10 @@ class TranzgooApiService {
     required String planId,
     required String phone,
   }) async {
-    final response = await _apiClient.post(
-      '/api/services/data/purchase',
-      {
-        'planId': planId,
-        'phone': phone.trim(),
-      },
-      authenticated: true,
-    );
+    final response = await _apiClient.post('/api/services/data/purchase', {
+      'planId': planId,
+      'phone': phone.trim(),
+    }, authenticated: true);
 
     return _data(response);
   }
@@ -183,8 +165,9 @@ class TranzgooApiService {
     return _list(response, 'providers');
   }
 
-  Future<List<Map<String, dynamic>>> getCablePackages(
-      {String? provider}) async {
+  Future<List<Map<String, dynamic>>> getCablePackages({
+    String? provider,
+  }) async {
     final query = provider == null || provider.isEmpty
         ? ''
         : '?provider=${Uri.encodeComponent(provider)}';
@@ -199,14 +182,10 @@ class TranzgooApiService {
     required String provider,
     required String smartCardNumber,
   }) async {
-    final response = await _apiClient.post(
-      '/api/services/cable/validate',
-      {
-        'provider': provider,
-        'smartCardNumber': smartCardNumber.trim(),
-      },
-      authenticated: true,
-    );
+    final response = await _apiClient.post('/api/services/cable/validate', {
+      'provider': provider,
+      'smartCardNumber': smartCardNumber.trim(),
+    }, authenticated: true);
 
     return _map(response, 'customer');
   }
@@ -215,14 +194,10 @@ class TranzgooApiService {
     required String packageId,
     required String smartCardNumber,
   }) async {
-    final response = await _apiClient.post(
-      '/api/services/cable/purchase',
-      {
-        'packageId': packageId,
-        'smartCardNumber': smartCardNumber.trim(),
-      },
-      authenticated: true,
-    );
+    final response = await _apiClient.post('/api/services/cable/purchase', {
+      'packageId': packageId,
+      'smartCardNumber': smartCardNumber.trim(),
+    }, authenticated: true);
 
     return _data(response);
   }
@@ -241,10 +216,7 @@ class TranzgooApiService {
   }) async {
     final response = await _apiClient.post(
       '/api/services/electricity/validate-meter',
-      {
-        'provider': provider,
-        'meterNumber': meterNumber.trim(),
-      },
+      {'provider': provider, 'meterNumber': meterNumber.trim()},
       authenticated: true,
     );
 
@@ -257,16 +229,13 @@ class TranzgooApiService {
     required String meterType,
     required String amount,
   }) async {
-    final response = await _apiClient.post(
-      '/api/services/electricity/purchase',
-      {
-        'provider': provider,
-        'meterNumber': meterNumber.trim(),
-        'meterType': meterType,
-        'amount': amount.trim(),
-      },
-      authenticated: true,
-    );
+    final response = await _apiClient
+        .post('/api/services/electricity/purchase', {
+          'provider': provider,
+          'meterNumber': meterNumber.trim(),
+          'meterType': meterType,
+          'amount': amount.trim(),
+        }, authenticated: true);
 
     return _data(response);
   }
@@ -280,11 +249,9 @@ class TranzgooApiService {
   }
 
   Future<Map<String, dynamic>> buyEducationProduct(String productId) async {
-    final response = await _apiClient.post(
-      '/api/services/education/purchase',
-      {'productId': productId},
-      authenticated: true,
-    );
+    final response = await _apiClient.post('/api/services/education/purchase', {
+      'productId': productId,
+    }, authenticated: true);
 
     return _data(response);
   }
@@ -306,11 +273,7 @@ class TranzgooApiService {
   }) async {
     final response = await _apiClient.post(
       '/api/services/airtime-to-cash/submit',
-      {
-        'network': network,
-        'phone': phone.trim(),
-        'amount': amount.trim(),
-      },
+      {'network': network, 'phone': phone.trim(), 'amount': amount.trim()},
       authenticated: true,
     );
 
@@ -361,17 +324,17 @@ class TranzgooApiService {
   }
 
   Future<Map<String, dynamic>> getReferrals() async {
-    final response =
-        await _apiClient.get('/api/referrals', authenticated: true);
+    final response = await _apiClient.get(
+      '/api/referrals',
+      authenticated: true,
+    );
     return _data(response);
   }
 
   Future<Map<String, dynamic>> sendReferralInvite(String recipient) async {
-    final response = await _apiClient.post(
-      '/api/referrals/invite',
-      {'recipient': recipient.trim()},
-      authenticated: true,
-    );
+    final response = await _apiClient.post('/api/referrals/invite', {
+      'recipient': recipient.trim(),
+    }, authenticated: true);
 
     return _data(response);
   }
@@ -388,14 +351,10 @@ class TranzgooApiService {
     required String subject,
     required String message,
   }) async {
-    final response = await _apiClient.post(
-      '/api/support/tickets',
-      {
-        'subject': subject.trim(),
-        'message': message.trim(),
-      },
-      authenticated: true,
-    );
+    final response = await _apiClient.post('/api/support/tickets', {
+      'subject': subject.trim(),
+      'message': message.trim(),
+    }, authenticated: true);
 
     return _map(response, 'ticket');
   }

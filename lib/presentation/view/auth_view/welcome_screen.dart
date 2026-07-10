@@ -5,7 +5,7 @@ import 'package:tranzgoo/utils/widget/app_button.dart';
 import 'package:tranzgoo/utils/widget/responsive_layout.dart';
 
 class WelcomeScreen extends StatefulWidget {
-  const WelcomeScreen({Key? key}) : super(key: key);
+  const WelcomeScreen({super.key});
 
   @override
   State<WelcomeScreen> createState() => _WelcomeScreenState();
@@ -52,9 +52,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 letterSpacing: 0,
               ),
             ),
-            const SizedBox(
-              height: 30,
-            ),
+            const SizedBox(height: 30),
             AppButton(
               isText: true,
               onPressed: () {
@@ -62,9 +60,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               },
               label: 'Create Account',
             ),
-            const SizedBox(
-              height: 15,
-            ),
+            const SizedBox(height: 15),
             AppButton(
               isText: true,
               onPressed: () {

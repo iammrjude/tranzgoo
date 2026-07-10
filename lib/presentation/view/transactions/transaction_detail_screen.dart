@@ -10,14 +10,11 @@ class TransactionDetailArguments {
   final String id;
   final Map<String, dynamic>? transaction;
 
-  const TransactionDetailArguments({
-    required this.id,
-    this.transaction,
-  });
+  const TransactionDetailArguments({required this.id, this.transaction});
 }
 
 class TransactionDetailScreen extends StatefulWidget {
-  const TransactionDetailScreen({Key? key}) : super(key: key);
+  const TransactionDetailScreen({super.key});
 
   @override
   State<TransactionDetailScreen> createState() =>
@@ -119,68 +116,70 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
       body: isLoading && data == null
           ? const AppLoadingState(message: 'Loading receipt...')
           : errorMessage != null && data == null
-              ? AppErrorState(message: errorMessage!, onRetry: loadTransaction)
-              : RefreshIndicator(
-                  onRefresh: loadTransaction,
-                  color: AppColors.primaryColor,
-                  child: ListView(
-                    padding: const EdgeInsets.fromLTRB(24, 20, 24, 30),
-                    children: [
-                      appSectionTitle(data?['description']?.toString() ??
-                          data?['type']?.toString() ??
-                          'Transaction'),
-                      const SizedBox(height: 12),
-                      AppInfoCard(
-                        color: AppColors.primaryColor,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Amount',
-                              style: AppText.mediumStyle.copyWith(
-                                color: AppColors.whiteColor,
-                                letterSpacing: 0.09,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Text(
-                              formatAmount(data?['amountKobo']),
-                              style: AppText.extraBold.copyWith(
-                                color: AppColors.whiteColor,
-                                fontSize: 26,
-                                letterSpacing: 0.09,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      ...receiptItems(data ?? {}).map(
-                        (item) => AppInfoCard(
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  item.label,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: AppText.mediumStyle,
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Flexible(
-                                child: Text(
-                                  item.value,
-                                  textAlign: TextAlign.right,
-                                  style: AppText.extraBold,
-                                ),
-                              ),
-                            ],
+          ? AppErrorState(message: errorMessage!, onRetry: loadTransaction)
+          : RefreshIndicator(
+              onRefresh: loadTransaction,
+              color: AppColors.primaryColor,
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(24, 20, 24, 30),
+                children: [
+                  appSectionTitle(
+                    data?['description']?.toString() ??
+                        data?['type']?.toString() ??
+                        'Transaction',
+                  ),
+                  const SizedBox(height: 12),
+                  AppInfoCard(
+                    color: AppColors.primaryColor,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Amount',
+                          style: AppText.mediumStyle.copyWith(
+                            color: AppColors.whiteColor,
+                            letterSpacing: 0.09,
                           ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 6),
+                        Text(
+                          formatAmount(data?['amountKobo']),
+                          style: AppText.extraBold.copyWith(
+                            color: AppColors.whiteColor,
+                            fontSize: 26,
+                            letterSpacing: 0.09,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                  ...receiptItems(data ?? {}).map(
+                    (item) => AppInfoCard(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              item.label,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppText.mediumStyle,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Flexible(
+                            child: Text(
+                              item.value,
+                              textAlign: TextAlign.right,
+                              style: AppText.extraBold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
     );
   }
 }
@@ -207,10 +206,7 @@ List<ReceiptLineItem> receiptItems(Map<String, dynamic> transaction) {
       label: 'Balance After',
       value: formatAmount(transaction['balanceAfterKobo']),
     ),
-    ReceiptLineItem(
-      label: 'Date',
-      value: formatDate(transaction['createdAt']),
-    ),
+    ReceiptLineItem(label: 'Date', value: formatDate(transaction['createdAt'])),
   ].where((item) => item.value.isNotEmpty).toList();
 }
 

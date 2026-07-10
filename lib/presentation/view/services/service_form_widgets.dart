@@ -12,20 +12,20 @@ class ServiceDropdown extends StatelessWidget {
   final String Function(Map<String, dynamic> item) itemLabel;
 
   const ServiceDropdown({
-    Key? key,
+    super.key,
     required this.hintText,
     required this.value,
     required this.items,
     required this.onChanged,
     required this.itemLabel,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(bottom: 17),
       child: DropdownButtonFormField<String>(
-        value: value == null || value!.isEmpty ? null : value,
+        initialValue: value == null || value!.isEmpty ? null : value,
         isExpanded: true,
         decoration: InputDecoration(
           hintText: hintText,
@@ -39,9 +39,7 @@ class ServiceDropdown extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             borderSide: const BorderSide(color: AppColors.primaryColor),
           ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         ),
         items: items.map((item) {
           final id = item['id']?.toString() ?? '';
@@ -65,10 +63,10 @@ class ServiceResultCard extends StatelessWidget {
   final List<String> lines;
 
   const ServiceResultCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.lines,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -106,11 +104,11 @@ class ServiceScreenShell extends StatelessWidget {
   final Widget child;
 
   const ServiceScreenShell({
-    Key? key,
+    super.key,
     required this.title,
     required this.subtitle,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

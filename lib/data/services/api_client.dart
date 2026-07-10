@@ -10,26 +10,22 @@ class ApiClient {
   final http.Client _httpClient;
   final SessionStorage _sessionStorage;
 
-  ApiClient({
-    http.Client? httpClient,
-    SessionStorage? sessionStorage,
-  })  : _httpClient = httpClient ?? http.Client(),
-        _sessionStorage = sessionStorage ?? SessionStorage();
+  ApiClient({http.Client? httpClient, SessionStorage? sessionStorage})
+    : _httpClient = httpClient ?? http.Client(),
+      _sessionStorage = sessionStorage ?? SessionStorage();
 
   Future<Map<String, dynamic>> get(
     String path, {
     bool authenticated = false,
   }) async {
-    final response = await _send(
-      () async {
-        return _httpClient
-            .get(
-              ApiConfig.uri(path),
-              headers: await _headers(authenticated: authenticated),
-            )
-            .timeout(ApiConfig.timeout);
-      },
-    );
+    final response = await _send(() async {
+      return _httpClient
+          .get(
+            ApiConfig.uri(path),
+            headers: await _headers(authenticated: authenticated),
+          )
+          .timeout(ApiConfig.timeout);
+    });
 
     return _decode(response);
   }
@@ -39,17 +35,15 @@ class ApiClient {
     Map<String, dynamic> body, {
     bool authenticated = false,
   }) async {
-    final response = await _send(
-      () async {
-        return _httpClient
-            .post(
-              ApiConfig.uri(path),
-              headers: await _headers(authenticated: authenticated),
-              body: jsonEncode(body),
-            )
-            .timeout(ApiConfig.timeout);
-      },
-    );
+    final response = await _send(() async {
+      return _httpClient
+          .post(
+            ApiConfig.uri(path),
+            headers: await _headers(authenticated: authenticated),
+            body: jsonEncode(body),
+          )
+          .timeout(ApiConfig.timeout);
+    });
 
     return _decode(response);
   }
@@ -59,17 +53,15 @@ class ApiClient {
     Map<String, dynamic> body, {
     bool authenticated = false,
   }) async {
-    final response = await _send(
-      () async {
-        return _httpClient
-            .patch(
-              ApiConfig.uri(path),
-              headers: await _headers(authenticated: authenticated),
-              body: jsonEncode(body),
-            )
-            .timeout(ApiConfig.timeout);
-      },
-    );
+    final response = await _send(() async {
+      return _httpClient
+          .patch(
+            ApiConfig.uri(path),
+            headers: await _headers(authenticated: authenticated),
+            body: jsonEncode(body),
+          )
+          .timeout(ApiConfig.timeout);
+    });
 
     return _decode(response);
   }

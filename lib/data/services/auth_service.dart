@@ -6,23 +6,18 @@ class AuthService {
   final ApiClient _apiClient;
   final SessionStorage _sessionStorage;
 
-  AuthService({
-    ApiClient? apiClient,
-    SessionStorage? sessionStorage,
-  })  : _apiClient = apiClient ?? ApiClient(),
-        _sessionStorage = sessionStorage ?? SessionStorage();
+  AuthService({ApiClient? apiClient, SessionStorage? sessionStorage})
+    : _apiClient = apiClient ?? ApiClient(),
+      _sessionStorage = sessionStorage ?? SessionStorage();
 
   Future<AuthSession> login({
     required String email,
     required String password,
   }) async {
-    final response = await _apiClient.post(
-      '/api/auth/login',
-      {
-        'email': email.trim(),
-        'password': password,
-      },
-    );
+    final response = await _apiClient.post('/api/auth/login', {
+      'email': email.trim(),
+      'password': password,
+    });
 
     final session = _sessionFromResponse(response);
     await _sessionStorage.saveSession(session);
@@ -36,16 +31,13 @@ class AuthService {
     required String password,
     required String confirmPassword,
   }) async {
-    final response = await _apiClient.post(
-      '/api/auth/register',
-      {
-        'fullName': fullName.trim(),
-        'email': email.trim(),
-        'phone': phone.trim(),
-        'password': password,
-        'confirmPassword': confirmPassword,
-      },
-    );
+    final response = await _apiClient.post('/api/auth/register', {
+      'fullName': fullName.trim(),
+      'email': email.trim(),
+      'phone': phone.trim(),
+      'password': password,
+      'confirmPassword': confirmPassword,
+    });
 
     final session = _sessionFromResponse(response);
     await _sessionStorage.saveSession(session);
@@ -53,10 +45,9 @@ class AuthService {
   }
 
   Future<Map<String, dynamic>> forgotPassword(String email) async {
-    final response = await _apiClient.post(
-      '/api/auth/forgot-password',
-      {'email': email.trim()},
-    );
+    final response = await _apiClient.post('/api/auth/forgot-password', {
+      'email': email.trim(),
+    });
 
     final data = response['data'];
     return data is Map<String, dynamic> ? data : <String, dynamic>{};
@@ -67,14 +58,11 @@ class AuthService {
     required String newPassword,
     required String confirmPassword,
   }) async {
-    await _apiClient.post(
-      '/api/auth/reset-password',
-      {
-        'token': token.trim(),
-        'newPassword': newPassword,
-        'confirmPassword': confirmPassword,
-      },
-    );
+    await _apiClient.post('/api/auth/reset-password', {
+      'token': token.trim(),
+      'newPassword': newPassword,
+      'confirmPassword': confirmPassword,
+    });
   }
 
   AuthSession _sessionFromResponse(Map<String, dynamic> response) {

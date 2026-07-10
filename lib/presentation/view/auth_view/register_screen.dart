@@ -9,7 +9,7 @@ import 'package:tranzgoo/utils/widget/app_textfield.dart';
 import 'package:tranzgoo/utils/widget/responsive_layout.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+  const RegisterScreen({super.key});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -98,9 +98,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -112,10 +112,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              'Register',
-              style: AppText.extraBold.copyWith(fontSize: 24),
-            ),
+            Text('Register', style: AppText.extraBold.copyWith(fontSize: 24)),
             Text(
               'Your all-in-one telecom solution! Buy airtime, data, pay bills, and convert airtime to cash effortlessly',
               style: AppText.regularStyle.copyWith(
@@ -125,9 +122,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(
-              height: 25,
-            ),
+            const SizedBox(height: 25),
             AppTextField(
               controller: fullNameController,
               icon: Image.asset('assets/icons/profileIcon.png'),
@@ -166,19 +161,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     Navigator.pushNamed(context, AppRoutes.loginView);
                   },
                   child: const Text('Sign in'),
-                )
+                ),
               ],
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 10),
             AppButton(
               onPressed: register,
               label: 'Submit',
               isText: true,
               isLoading: isLoading,
               labelColor: AppColors.whiteColor,
-            )
+            ),
           ],
         ),
       ),

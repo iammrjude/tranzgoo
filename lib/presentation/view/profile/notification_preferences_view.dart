@@ -7,7 +7,7 @@ import 'package:tranzgoo/utils/widget/app_button.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 
 class NotificationPreferencesScreen extends StatefulWidget {
-  const NotificationPreferencesScreen({Key? key}) : super(key: key);
+  const NotificationPreferencesScreen({super.key});
 
   @override
   State<NotificationPreferencesScreen> createState() =>
@@ -112,9 +112,9 @@ class _NotificationPreferencesScreenState
   }
 
   void showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -127,49 +127,46 @@ class _NotificationPreferencesScreenState
       body: isLoading
           ? const AppLoadingState(message: 'Loading preferences...')
           : errorMessage != null
-              ? AppErrorState(message: errorMessage!, onRetry: loadPreferences)
-              : ListView(
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
-                  children: [
-                    appSectionTitle('Notification Preferences'),
-                    const SizedBox(height: 16),
-                    preferenceTile(
-                      title: 'Account Updates',
-                      subtitle: 'Profile, wallet, and account messages',
-                      value: preferences['accountUpdates'] ?? true,
-                      onChanged: (value) =>
-                          setPreference('accountUpdates', value),
-                    ),
-                    preferenceTile(
-                      title: 'Transactions',
-                      subtitle: 'Receipts and wallet activity',
-                      value: preferences['transactions'] ?? true,
-                      onChanged: (value) =>
-                          setPreference('transactions', value),
-                    ),
-                    preferenceTile(
-                      title: 'Promotions',
-                      subtitle: 'Offers and service announcements',
-                      value: preferences['promotions'] ?? false,
-                      onChanged: (value) => setPreference('promotions', value),
-                    ),
-                    preferenceTile(
-                      title: 'Security Alerts',
-                      subtitle: 'Login and password activity',
-                      value: preferences['securityAlerts'] ?? true,
-                      onChanged: (value) =>
-                          setPreference('securityAlerts', value),
-                    ),
-                    const SizedBox(height: 20),
-                    AppButton(
-                      onPressed: savePreferences,
-                      label: 'Save Preferences',
-                      isText: true,
-                      isLoading: isSaving,
-                      width: double.infinity,
-                    ),
-                  ],
+          ? AppErrorState(message: errorMessage!, onRetry: loadPreferences)
+          : ListView(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
+              children: [
+                appSectionTitle('Notification Preferences'),
+                const SizedBox(height: 16),
+                preferenceTile(
+                  title: 'Account Updates',
+                  subtitle: 'Profile, wallet, and account messages',
+                  value: preferences['accountUpdates'] ?? true,
+                  onChanged: (value) => setPreference('accountUpdates', value),
                 ),
+                preferenceTile(
+                  title: 'Transactions',
+                  subtitle: 'Receipts and wallet activity',
+                  value: preferences['transactions'] ?? true,
+                  onChanged: (value) => setPreference('transactions', value),
+                ),
+                preferenceTile(
+                  title: 'Promotions',
+                  subtitle: 'Offers and service announcements',
+                  value: preferences['promotions'] ?? false,
+                  onChanged: (value) => setPreference('promotions', value),
+                ),
+                preferenceTile(
+                  title: 'Security Alerts',
+                  subtitle: 'Login and password activity',
+                  value: preferences['securityAlerts'] ?? true,
+                  onChanged: (value) => setPreference('securityAlerts', value),
+                ),
+                const SizedBox(height: 20),
+                AppButton(
+                  onPressed: savePreferences,
+                  label: 'Save Preferences',
+                  isText: true,
+                  isLoading: isSaving,
+                  width: double.infinity,
+                ),
+              ],
+            ),
     );
   }
 }
@@ -184,7 +181,7 @@ Widget preferenceTile({
     child: SwitchListTile(
       value: value,
       onChanged: onChanged,
-      activeColor: AppColors.primaryColor,
+      activeThumbColor: AppColors.primaryColor,
       contentPadding: EdgeInsets.zero,
       title: Text(
         title,

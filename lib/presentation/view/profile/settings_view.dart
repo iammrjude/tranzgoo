@@ -6,7 +6,7 @@ import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 import 'profile_view.dart';
 
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+  const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
