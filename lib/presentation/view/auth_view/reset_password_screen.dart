@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tranzgoo/data/services/api_exception.dart';
 import 'package:tranzgoo/data/services/auth_service.dart';
 import 'package:tranzgoo/utils/routes/app_routes.dart';
@@ -8,6 +7,7 @@ import 'package:tranzgoo/utils/theme/app_style.dart';
 import 'package:tranzgoo/utils/widget/app_button.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 import 'package:tranzgoo/utils/widget/app_textfield.dart';
+import 'package:tranzgoo/utils/widget/responsive_layout.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   const ResetPasswordScreen({Key? key}) : super(key: key);
@@ -94,8 +94,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(28),
+      body: AppResponsiveScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -129,7 +128,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               isText: true,
               isLoading: isSubmitting,
               labelColor: AppColors.whiteColor,
-              width: 322.w,
             ),
           ],
         ),

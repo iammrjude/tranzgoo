@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tranzgoo/data/services/api_exception.dart';
 import 'package:tranzgoo/data/services/tranzgoo_api_service.dart';
 import 'package:tranzgoo/utils/theme/app_colors.dart';
@@ -8,6 +7,7 @@ import 'package:tranzgoo/utils/theme/app_style.dart';
 import 'package:tranzgoo/utils/widget/app_button.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 import 'package:tranzgoo/utils/widget/app_textfield.dart';
+import 'package:tranzgoo/utils/widget/responsive_layout.dart';
 
 class ReferralsScreen extends StatefulWidget {
   const ReferralsScreen({Key? key}) : super(key: key);
@@ -124,8 +124,7 @@ class _ReferralsScreenState extends State<ReferralsScreen> {
           ? const AppLoadingState(message: 'Loading referrals...')
           : errorMessage != null
               ? AppErrorState(message: errorMessage!, onRetry: loadReferrals)
-              : SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(24, 20, 24, 30),
+              : AppResponsiveScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -180,7 +179,6 @@ class _ReferralsScreenState extends State<ReferralsScreen> {
                         onPressed: copyInvite,
                         label: 'Copy Invite Message',
                         isText: true,
-                        width: 322.w,
                       ),
                       const SizedBox(height: 18),
                       AppTextField(
@@ -193,7 +191,6 @@ class _ReferralsScreenState extends State<ReferralsScreen> {
                         label: 'Send Invite',
                         isText: true,
                         isLoading: isSending,
-                        width: 322.w,
                       ),
                     ],
                   ),

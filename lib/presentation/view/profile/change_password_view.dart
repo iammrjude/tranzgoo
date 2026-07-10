@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tranzgoo/data/services/api_exception.dart';
 import 'package:tranzgoo/data/services/tranzgoo_api_service.dart';
 import 'package:tranzgoo/utils/theme/app_colors.dart';
@@ -7,6 +6,7 @@ import 'package:tranzgoo/utils/theme/app_style.dart';
 import 'package:tranzgoo/utils/widget/app_button.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 import 'package:tranzgoo/utils/widget/app_textfield.dart';
+import 'package:tranzgoo/utils/widget/responsive_layout.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({Key? key}) : super(key: key);
@@ -83,8 +83,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         centerTitle: true,
         title: const Text('Change Password', style: AppText.extraBold),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(28, 20, 28, 30),
+      body: AppResponsiveScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -120,7 +119,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               isText: true,
               isLoading: isSubmitting,
               labelColor: AppColors.whiteColor,
-              width: 322.w,
             ),
           ],
         ),

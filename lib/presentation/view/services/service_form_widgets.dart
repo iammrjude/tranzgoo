@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tranzgoo/utils/theme/app_colors.dart';
 import 'package:tranzgoo/utils/theme/app_style.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
+import 'package:tranzgoo/utils/widget/responsive_layout.dart';
 
 class ServiceDropdown extends StatelessWidget {
   final String hintText;
@@ -30,7 +31,10 @@ class ServiceDropdown extends StatelessWidget {
           hintText: hintText,
           filled: true,
           fillColor: AppColors.whiteColor,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 18),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 18,
+            vertical: 14,
+          ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: const BorderSide(color: AppColors.primaryColor),
@@ -112,23 +116,21 @@ class ServiceScreenShell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(centerTitle: true, title: Text(title)),
-      body: SafeArea(
-        bottom: false,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(24, 20, 24, 30),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              appSectionTitle(title),
-              const SizedBox(height: 6),
-              Text(
-                subtitle,
-                style: AppText.mediumStyle.copyWith(letterSpacing: 0.09),
-              ),
-              const SizedBox(height: 20),
-              child,
-            ],
-          ),
+      body: AppResponsiveScrollView(
+        maxWidth: AppResponsive.formMaxWidth,
+        padding: const EdgeInsets.fromLTRB(24, 20, 24, 30),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            appSectionTitle(title),
+            const SizedBox(height: 6),
+            Text(
+              subtitle,
+              style: AppText.mediumStyle.copyWith(letterSpacing: 0.09),
+            ),
+            const SizedBox(height: 20),
+            child,
+          ],
         ),
       ),
     );

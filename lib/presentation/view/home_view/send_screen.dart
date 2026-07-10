@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tranzgoo/data/services/api_exception.dart';
 import 'package:tranzgoo/data/services/tranzgoo_api_service.dart';
 import 'package:tranzgoo/presentation/view/services/service_form_widgets.dart';
@@ -10,6 +9,7 @@ import 'package:tranzgoo/utils/theme/app_colors.dart';
 import 'package:tranzgoo/utils/theme/app_style.dart';
 import 'package:tranzgoo/utils/widget/app_button.dart';
 import 'package:tranzgoo/utils/widget/app_textfield.dart';
+import 'package:tranzgoo/utils/widget/responsive_layout.dart';
 
 class SendView extends StatefulWidget {
   const SendView({Key? key}) : super(key: key);
@@ -147,80 +147,73 @@ class _SendViewState extends State<SendView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(28),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Send',
-                style: AppText.extraBold.copyWith(
-                  fontSize: 16,
-                  letterSpacing: 0.09,
-                ),
+      body: AppResponsiveScrollView(
+        centerVertically: true,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Send',
+              style: AppText.extraBold.copyWith(
+                fontSize: 16,
+                letterSpacing: 0.09,
               ),
-              const SizedBox(height: 10),
-              Text(
-                'Transfer funds to another user on \nTranzGOO.',
-                textAlign: TextAlign.center,
-                style: AppText.regularStyle.copyWith(letterSpacing: 0.09),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              'Transfer funds to another user on \nTranzGOO.',
+              textAlign: TextAlign.center,
+              style: AppText.regularStyle.copyWith(letterSpacing: 0.09),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'TranzGOO ID',
+              style: AppText.extraBold.copyWith(color: AppColors.primaryColor),
+            ),
+            const SizedBox(height: 5),
+            AppTextField(
+              controller: tranzgoId,
+              textCenter: true,
+              hintText: '* * * * * *',
+            ),
+            AppButton(
+              onPressed: lookupReceiver,
+              label: 'Check ID',
+              isText: true,
+              isLoading: isLookingUp,
+            ),
+            const SizedBox(height: 12),
+            if (receiver != null)
+              ServiceResultCard(
+                title: 'Receiver',
+                lines: [
+                  '${receiver!['fullName'] ?? ''}',
+                  'ID: ${receiver!['tranzgoId'] ?? ''}',
+                ],
               ),
-              const SizedBox(height: 8),
-              Text(
-                'TranzGOO ID',
-                style:
-                    AppText.extraBold.copyWith(color: AppColors.primaryColor),
-              ),
-              const SizedBox(height: 5),
-              AppTextField(
-                controller: tranzgoId,
-                textCenter: true,
-                hintText: '* * * * * *',
-                width: 254.w,
-              ),
-              AppButton(
-                onPressed: lookupReceiver,
-                label: 'Check ID',
-                isText: true,
-                isLoading: isLookingUp,
-                width: 254.w,
-              ),
-              const SizedBox(height: 12),
-              if (receiver != null)
-                ServiceResultCard(
-                  title: 'Receiver',
-                  lines: [
-                    '${receiver!['fullName'] ?? ''}',
-                    'ID: ${receiver!['tranzgoId'] ?? ''}',
-                  ],
-                ),
-              Text(
-                'Amount',
-                style:
-                    AppText.extraBold.copyWith(color: AppColors.primaryColor),
-              ),
-              const SizedBox(height: 5),
-              AppTextField(
-                textCenter: true,
-                controller: amount,
-                hintText: '0.00',
-                keyboardType: TextInputType.number,
-                width: 254.w,
-              ),
-              AppTextField(
-                controller: note,
-                hintText: 'Note (optional)',
-                width: 254.w,
-              ),
-              const SizedBox(height: 20),
-              AppButton(
-                onPressed: confirmTransfer,
-                label: 'Review Transfer',
-                isText: true,
-              )
-            ],
-          ),
+            Text(
+              'Amount',
+              style: AppText.extraBold.copyWith(color: AppColors.primaryColor),
+            ),
+            const SizedBox(height: 5),
+            AppTextField(
+              textCenter: true,
+              controller: amount,
+              hintText: '0.00',
+              keyboardType: TextInputType.number,
+            ),
+            AppTextField(
+              controller: note,
+              hintText: 'Note (optional)',
+            ),
+            const SizedBox(height: 20),
+            AppButton(
+              onPressed: confirmTransfer,
+              label: 'Review Transfer',
+              isText: true,
+            )
+          ],
         ),
       ),
     );

@@ -82,6 +82,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  void goHome() {
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      AppRoutes.baseView,
+      (route) => false,
+    );
+  }
+
+  void goBack() {
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+      return;
+    }
+
+    goHome();
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -104,12 +121,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile', style: AppText.extraBold),
+        leading: IconButton(
+          onPressed: goBack,
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+            size: 30,
+          ),
+        ),
+        title: Text(
+          'Profile',
+          style: AppText.extraBold.copyWith(
+            fontSize: 28,
+            letterSpacing: 2,
+          ),
+        ),
         centerTitle: true,
         actions: [
           IconButton(
-            onPressed: () => openAndReload(AppRoutes.editProfileView),
-            icon: Image.asset('assets/icons/edit.png'),
+            tooltip: 'Go home',
+            onPressed: goHome,
+            icon: const Icon(
+              Icons.home,
+              color: AppColors.primaryColor,
+              size: 30,
+            ),
           )
         ],
       ),
@@ -117,24 +153,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
         onRefresh: loadProfile,
         color: AppColors.primaryColor,
         child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.fromLTRB(32, 12, 32, 24),
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Profile',
-                      style: AppText.extraBold.copyWith(
-                        fontSize: 16,
-                        letterSpacing: 0.09,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Profile',
+                        style: AppText.extraBold.copyWith(
+                          fontSize: 20,
+                          letterSpacing: 0.09,
+                        ),
                       ),
-                    ),
-                    const Text('Manage your TranzGOO account from here'),
-                  ],
+                      Text(
+                        'Manage your TranzGOO account from here',
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppText.regularStyle.copyWith(
+                          fontSize: 18,
+                          letterSpacing: 0.09,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
+                const SizedBox(width: 12),
                 IconButton(
                   padding: EdgeInsets.zero,
                   onPressed: () => openAndReload(AppRoutes.editProfileView),
@@ -142,43 +189,61 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 30),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(46),
-              child: Image.asset(
-                'assets/images/person.png',
-                height: 70,
-                width: 70,
+            const SizedBox(height: 58),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(46),
+                child: Image.asset(
+                  'assets/images/person.png',
+                  height: 70,
+                  width: 70,
+                ),
               ),
             ),
-            const SizedBox(height: 5),
+            const SizedBox(height: 14),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      fullName,
-                      style: AppText.extraBold.copyWith(
-                        fontSize: 16,
-                        letterSpacing: 0.09,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        fullName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppText.extraBold.copyWith(
+                          fontSize: 22,
+                          letterSpacing: 0.09,
+                        ),
                       ),
-                    ),
-                    Text(email),
-                  ],
+                      Text(
+                        email,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppText.regularStyle.copyWith(
+                          fontSize: 18,
+                          letterSpacing: 0.09,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
+                const SizedBox(width: 12),
                 Column(
                   children: [
                     Text(
                       'TG ID',
-                      style: AppText.bold.copyWith(letterSpacing: 0.09),
+                      style: AppText.bold.copyWith(
+                        fontSize: 18,
+                        letterSpacing: 0.09,
+                      ),
                     ),
                     Text(
                       tranzgoId,
                       style: AppText.lightStyle.copyWith(
-                        fontSize: 10,
+                        fontSize: 13,
                         letterSpacing: 0.09,
                       ),
                     ),
@@ -186,10 +251,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 28),
             Text(
               'General settings',
-              style: AppText.mediumStyle.copyWith(letterSpacing: 0.09),
+              style: AppText.mediumStyle.copyWith(
+                fontSize: 18,
+                letterSpacing: 0.09,
+              ),
             ),
             const SizedBox(height: 15),
             settingsWidget(
@@ -264,39 +332,48 @@ Widget settingsWidget({
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            Container(
-              height: 32,
-              decoration: const BoxDecoration(
-                color: AppColors.whiteColor,
-                shape: BoxShape.circle,
+        Expanded(
+          child: Row(
+            children: [
+              Container(
+                height: 32,
+                decoration: const BoxDecoration(
+                  color: AppColors.whiteColor,
+                  shape: BoxShape.circle,
+                ),
+                child: child,
               ),
-              child: child,
-            ),
-            const SizedBox(width: 8),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title ?? '',
-                  style: AppText.bold.copyWith(
-                    fontSize: 14,
-                    letterSpacing: 0.09,
-                  ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title ?? '',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppText.bold.copyWith(
+                        fontSize: 14,
+                        letterSpacing: 0.09,
+                      ),
+                    ),
+                    Text(
+                      subTitle ?? '',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppText.mediumStyle.copyWith(
+                        fontSize: 11,
+                        letterSpacing: 0.09,
+                      ),
+                    ),
+                  ],
                 ),
-                Text(
-                  subTitle ?? '',
-                  style: AppText.mediumStyle.copyWith(
-                    fontSize: 11,
-                    letterSpacing: 0.09,
-                  ),
-                ),
-              ],
-            )
-          ],
+              )
+            ],
+          ),
         ),
+        const SizedBox(width: 8),
         icon ??
             const Icon(
               Icons.arrow_forward_ios_rounded,

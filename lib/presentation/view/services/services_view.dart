@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tranzgoo/data/services/api_exception.dart';
 import 'package:tranzgoo/data/services/tranzgoo_api_service.dart';
 import 'package:tranzgoo/utils/routes/app_routes.dart';
@@ -7,6 +6,7 @@ import 'package:tranzgoo/utils/theme/app_colors.dart';
 import 'package:tranzgoo/utils/theme/app_style.dart';
 import 'package:tranzgoo/utils/widget/app_clickable_surface.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
+import 'package:tranzgoo/utils/widget/responsive_layout.dart';
 
 class ServiceScreen extends StatefulWidget {
   const ServiceScreen({Key? key}) : super(key: key);
@@ -63,42 +63,41 @@ class _ServiceScreenState extends State<ServiceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 50, 20, 0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Services',
-                style: AppText.extraBold
-                    .copyWith(fontSize: 16, letterSpacing: 0.09),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              const Text('Explore our range of services'),
-              const SizedBox(
-                height: 13,
-              ),
-              if (isLoading)
-                const Expanded(child: AppLoadingState())
-              else if (errorMessage != null)
-                Expanded(
-                  child: AppErrorState(
-                    message: errorMessage!,
-                    onRetry: loadServices,
-                  ),
-                )
-              else
-                Wrap(
-                  spacing: 14.w,
-                  runSpacing: 20,
-                  children: serviceTiles(context),
+      body: AppResponsiveScrollView(
+        maxWidth: AppResponsive.appMaxWidth,
+        padding: const EdgeInsets.fromLTRB(20, 50, 20, 30),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Services',
+              style:
+                  AppText.extraBold.copyWith(fontSize: 16, letterSpacing: 0.09),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            const Text('Explore our range of services'),
+            const SizedBox(
+              height: 13,
+            ),
+            if (isLoading)
+              const SizedBox(height: 260, child: AppLoadingState())
+            else if (errorMessage != null)
+              SizedBox(
+                height: 260,
+                child: AppErrorState(
+                  message: errorMessage!,
+                  onRetry: loadServices,
                 ),
-            ],
-          ),
+              )
+            else
+              Wrap(
+                spacing: 14,
+                runSpacing: 20,
+                children: serviceTiles(context),
+              ),
+          ],
         ),
       ),
     );
@@ -166,20 +165,26 @@ Widget serviceContainer(Widget widget, String text, VoidCallback onTap) {
   return AppClickableSurface(
     onTap: onTap,
     semanticLabel: text,
-    height: 96.h,
-    width: 96.w,
+    height: 104,
+    width: 104,
     color: AppColors.whiteColor,
     border: Border.all(color: AppColors.grey200),
     borderRadius: BorderRadius.circular(7),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        widget,
+        SizedBox.square(
+          dimension: 30,
+          child: FittedBox(child: widget),
+        ),
         const SizedBox(
           height: 8,
         ),
         Text(
           text,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
           style: AppText.extraBold
               .copyWith(color: AppColors.primaryColor, letterSpacing: 0.09),
         ),

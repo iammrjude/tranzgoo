@@ -160,11 +160,14 @@ class _PaymentConfirmationScreenState extends State<PaymentConfirmationScreen> {
 Widget _receiptRow(String label, String value) {
   return AppInfoCard(
     child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          label,
-          style: AppText.mediumStyle.copyWith(letterSpacing: 0.09),
+        Expanded(
+          child: Text(
+            label,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: AppText.mediumStyle.copyWith(letterSpacing: 0.09),
+          ),
         ),
         const SizedBox(width: 12),
         Flexible(

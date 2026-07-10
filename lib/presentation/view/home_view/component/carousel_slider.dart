@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tranzgoo/utils/theme/app_colors.dart';
+import 'package:tranzgoo/utils/widget/responsive_layout.dart';
 
 class CarouselComponent extends StatefulWidget {
   const CarouselComponent({Key? key}) : super(key: key);
@@ -19,69 +19,72 @@ class _CarouselComponentState extends State<CarouselComponent> {
     'assets/images/Flyer 01 1.png',
     'assets/images/Flyer 01 1.png',
   ];
+
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-          height: 294.h,
-          child: PageView.builder(
-              padEnds: false,
-              controller: pageController,
-              itemCount: images.length,
-              onPageChanged: (e) {
-                setState(
-                  () {
-                    initialPage = e;
-                  },
-                );
-              },
-              itemBuilder: (context, index) {
-                return SizedBox(
-                  height: 294.h,
-                  width: MediaQuery.of(context).size.width,
-                  child: Image.asset(
-                    images[index],
-                  ),
-                );
-              }),
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.hasBoundedWidth
+            ? constraints.maxWidth
+            : MediaQuery.sizeOf(context).width;
+        final bannerHeight = AppResponsive.clampDouble(width * 0.72, 180, 300);
+
+        return Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: 10,
-              height: 10,
-              margin: const EdgeInsets.symmetric(horizontal: 5),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: initialPage == 0 ? AppColors.primaryColor : Colors.grey,
+            SizedBox(
+              height: bannerHeight,
+              child: PageView.builder(
+                padEnds: false,
+                controller: pageController,
+                itemCount: images.length,
+                onPageChanged: (e) {
+                  setState(
+                    () {
+                      initialPage = e;
+                    },
+                  );
+                },
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: Image.asset(
+                      images[index],
+                      fit: BoxFit.contain,
+                      width: double.infinity,
+                      height: bannerHeight,
+                    ),
+                  );
+                },
               ),
             ),
-            Container(
-              width: 10,
-              height: 10,
-              margin: const EdgeInsets.symmetric(horizontal: 5),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: initialPage == 1 ? AppColors.primaryColor : Colors.grey,
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                images.length,
+                (index) => Container(
+                  width: 10,
+                  height: 10,
+                  margin: const EdgeInsets.symmetric(horizontal: 5),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: initialPage == index
+                        ? AppColors.primaryColor
+                        : Colors.grey,
+                  ),
+                ),
               ),
-            ),
-            Container(
-              width: 10,
-              height: 10,
-              margin: const EdgeInsets.symmetric(horizontal: 5),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: initialPage == 2 ? AppColors.primaryColor : Colors.grey,
-              ),
-            ),
+            )
           ],
-        )
-      ],
+        );
+      },
     );
   }
 }

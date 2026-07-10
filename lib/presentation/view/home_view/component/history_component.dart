@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tranzgoo/presentation/view/transactions/transaction_detail_screen.dart';
 import 'package:tranzgoo/utils/routes/app_routes.dart';
 import 'package:tranzgoo/utils/theme/app_colors.dart';
@@ -121,7 +120,7 @@ class TransactionTile extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Container(
-                  height: 28.h,
+                  constraints: const BoxConstraints(minHeight: 28),
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
@@ -145,11 +144,16 @@ class TransactionTile extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
-          Text(
-            '${isCredit ? '+' : '-'}NGN $amount',
-            style: AppText.extraBold.copyWith(
-              color: isCredit ? AppColors.primaryColor : Colors.red,
-              letterSpacing: 0.09,
+          Flexible(
+            child: Text(
+              '${isCredit ? '+' : '-'}NGN $amount',
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.right,
+              style: AppText.extraBold.copyWith(
+                color: isCredit ? AppColors.primaryColor : Colors.red,
+                letterSpacing: 0.09,
+              ),
             ),
           ),
         ],

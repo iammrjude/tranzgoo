@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tranzgoo/data/services/api_exception.dart';
 import 'package:tranzgoo/data/services/tranzgoo_api_service.dart';
 import 'package:tranzgoo/utils/theme/app_colors.dart';
@@ -75,9 +74,10 @@ class _FundAccountState extends State<FundAccount> {
         title: const Text('Fund Account', style: AppText.extraBold),
         actions: [
           Container(
-            height: 23.h,
-            width: 23.w,
+            height: 36,
+            width: 36,
             margin: const EdgeInsets.only(right: 10),
+            padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
               border: Border.all(color: AppColors.primaryColor),
               borderRadius: BorderRadius.circular(6),
@@ -163,19 +163,23 @@ Widget fundAccountContainer({
         ),
         const SizedBox(height: 10),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Account no.'),
-                Text(
-                  accountNumber,
-                  style:
-                      AppText.extraBold.copyWith(color: AppColors.whiteColor),
-                ),
-              ],
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Account no.'),
+                  Text(
+                    accountNumber,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style:
+                        AppText.extraBold.copyWith(color: AppColors.whiteColor),
+                  ),
+                ],
+              ),
             ),
+            const SizedBox(width: 12),
             AppClickableSurface(
               onTap: onCopy,
               semanticLabel: 'Copy account number',

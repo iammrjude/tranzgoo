@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tranzgoo/data/services/api_exception.dart';
 import 'package:tranzgoo/data/services/tranzgoo_api_service.dart';
 import 'package:tranzgoo/presentation/view/home_view/component/account_card.dart';
@@ -10,6 +9,7 @@ import 'package:tranzgoo/utils/theme/app_colors.dart';
 import 'package:tranzgoo/utils/theme/app_style.dart';
 import 'package:tranzgoo/utils/widget/app_clickable_surface.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
+import 'package:tranzgoo/utils/widget/responsive_layout.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -95,107 +95,128 @@ class _HomeScreenState extends State<HomeScreen> {
     final balance = wallet?['balance']?.toString() ?? '0.00';
 
     return Scaffold(
-      body: SafeArea(
-        bottom: false,
-        child: RefreshIndicator(
-          onRefresh: loadHome,
-          color: AppColors.primaryColor,
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.fromLTRB(28, 20, 28, 30),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+      body: RefreshIndicator(
+        onRefresh: loadHome,
+        color: AppColors.primaryColor,
+        child: AppResponsiveScrollView(
+          maxWidth: AppResponsive.appMaxWidth,
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(48),
-                          child: Image.asset('assets/images/person.png'),
+                          child: Image.asset(
+                            'assets/images/person.png',
+                            height: 52,
+                            width: 52,
+                          ),
                         ),
                         const SizedBox(width: 10),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  greeting(),
-                                  style: AppText.extraBold.copyWith(
-                                    fontSize: 16,
-                                    letterSpacing: 0.092,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Flexible(
+                                    fit: FlexFit.loose,
+                                    child: Text(
+                                      greeting(),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: AppText.extraBold.copyWith(
+                                        fontSize: 16,
+                                        letterSpacing: 0.092,
+                                      ),
+                                    ),
                                   ),
+                                  const SizedBox(width: 5),
+                                  Image.asset(
+                                    'assets/icons/Group 9.png',
+                                    height: 24,
+                                    width: 24,
+                                  ),
+                                ],
+                              ),
+                              Text(
+                                firstName,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppText.mediumStyle.copyWith(
+                                  fontSize: 16,
+                                  letterSpacing: 0.092,
                                 ),
-                                const SizedBox(width: 5),
-                                Image.asset('assets/icons/Group 9.png'),
-                              ],
-                            ),
-                            Text(
-                              firstName,
-                              style: AppText.mediumStyle.copyWith(
-                                fontSize: 16,
-                                letterSpacing: 0.092,
                               ),
-                            ),
-                            Text(
-                              tranzgoId,
-                              style: AppText.lightStyle.copyWith(
-                                color: AppColors.grey500,
-                                letterSpacing: 0.092,
-                                fontSize: 10,
-                              ),
-                            )
-                          ],
+                              Text(
+                                tranzgoId,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppText.lightStyle.copyWith(
+                                  color: AppColors.grey500,
+                                  letterSpacing: 0.092,
+                                  fontSize: 10,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ],
                     ),
-                    AppClickableSurface(
-                      onTap: () => Navigator.pushNamed(
-                        context,
-                        AppRoutes.notificationsView,
-                      ),
-                      semanticLabel: 'Open notifications',
-                      height: 23.h,
-                      width: 23.w,
-                      color: AppColors.whiteColor,
-                      border: Border.all(color: AppColors.primaryColor),
-                      borderRadius: BorderRadius.circular(6),
-                      child: Image.asset('assets/icons/notification.png'),
-                    )
-                  ],
-                ),
-                const SizedBox(height: 20),
-                AccountCard(
-                  balance: balance,
-                  onSend: () => Navigator.pushNamed(context, AppRoutes.sendView)
-                      .then((_) => loadHome()),
-                  onFund: () => Navigator.pushNamed(
-                    context,
-                    AppRoutes.fundAccountView,
-                  ).then((_) => loadHome()),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  children: [
-                    Image.asset('assets/icons/bolt.png'),
-                    const SizedBox(width: 5),
-                    Text(
-                      'Quick Access',
-                      style: AppText.extraBold.copyWith(
-                        color: AppColors.primaryColor,
-                        fontSize: 16,
-                      ),
+                  ),
+                  const SizedBox(width: 12),
+                  AppClickableSurface(
+                    onTap: () => Navigator.pushNamed(
+                      context,
+                      AppRoutes.notificationsView,
                     ),
-                  ],
-                ),
-                const SizedBox(height: 13.5),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    quickAccessContainer(
+                    semanticLabel: 'Open notifications',
+                    height: 36,
+                    width: 36,
+                    padding: const EdgeInsets.all(6),
+                    color: AppColors.whiteColor,
+                    border: Border.all(color: AppColors.primaryColor),
+                    borderRadius: BorderRadius.circular(6),
+                    child: Image.asset('assets/icons/notification.png'),
+                  )
+                ],
+              ),
+              const SizedBox(height: 20),
+              AccountCard(
+                balance: balance,
+                onSend: () => Navigator.pushNamed(context, AppRoutes.sendView)
+                    .then((_) => loadHome()),
+                onFund: () => Navigator.pushNamed(
+                  context,
+                  AppRoutes.fundAccountView,
+                ).then((_) => loadHome()),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Image.asset('assets/icons/bolt.png'),
+                  const SizedBox(width: 5),
+                  Text(
+                    'Quick Access',
+                    style: AppText.extraBold.copyWith(
+                      color: AppColors.primaryColor,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 13.5),
+              Row(
+                children: [
+                  Expanded(
+                    child: quickAccessContainer(
                       icon: Image.asset(
                         'assets/icons/phoneIcon.png',
                         height: 16,
@@ -206,7 +227,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: () =>
                           Navigator.pushNamed(context, AppRoutes.airtimeView),
                     ),
-                    quickAccessContainer(
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: quickAccessContainer(
                       icon: Image.asset(
                         'assets/icons/search.png',
                         color: AppColors.primaryColor,
@@ -215,7 +239,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: () =>
                           Navigator.pushNamed(context, AppRoutes.dataView),
                     ),
-                    quickAccessContainer(
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: quickAccessContainer(
                       icon: Image.asset(
                         'assets/icons/ph_swap-fill.png',
                         color: AppColors.primaryColor,
@@ -226,48 +253,49 @@ class _HomeScreenState extends State<HomeScreen> {
                         AppRoutes.airtimeToCashView,
                       ),
                     ),
-                    quickAccessContainer(
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: quickAccessContainer(
                       icon: const Icon(
                         Icons.more_horiz,
                         size: 16,
                         color: AppColors.primaryColor,
                       ),
                       text: 'More',
-                      onTap: () =>
-                          Navigator.pushNamed(context, AppRoutes.servicesView),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  height: 316.h,
-                  width: MediaQuery.of(context).size.width,
-                  child: const CarouselComponent(),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'History',
-                      style: AppText.mediumStyle.copyWith(fontSize: 16),
-                    ),
-                    TextButton(
-                      onPressed: () =>
-                          Navigator.pushNamed(context, AppRoutes.historyView),
-                      child: Text(
-                        'View all',
-                        style: AppText.extraBold.copyWith(
-                          color: AppColors.primaryColor,
-                          letterSpacing: 0.09,
-                        ),
+                      onTap: () => Navigator.pushNamed(
+                        context,
+                        AppRoutes.servicesView,
                       ),
                     ),
-                  ],
-                ),
-                HistoryComponent(transactions: transactions),
-              ],
-            ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              const CarouselComponent(),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'History',
+                    style: AppText.mediumStyle.copyWith(fontSize: 16),
+                  ),
+                  TextButton(
+                    onPressed: () =>
+                        Navigator.pushNamed(context, AppRoutes.historyView),
+                    child: Text(
+                      'View all',
+                      style: AppText.extraBold.copyWith(
+                        color: AppColors.primaryColor,
+                        letterSpacing: 0.09,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              HistoryComponent(transactions: transactions),
+            ],
           ),
         ),
       ),
@@ -297,11 +325,11 @@ Widget quickAccessContainer({
   return AppClickableSurface(
     onTap: onTap,
     semanticLabel: text,
-    height: 50.h,
+    height: 58,
     color: AppColors.whiteColor,
     border: Border.all(color: AppColors.primaryColor),
     borderRadius: BorderRadius.circular(10),
-    padding: EdgeInsets.symmetric(horizontal: 12.w),
+    padding: const EdgeInsets.symmetric(horizontal: 8),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,

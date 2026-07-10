@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tranzgoo/data/services/api_exception.dart';
 import 'package:tranzgoo/data/services/tranzgoo_api_service.dart';
 import 'package:tranzgoo/utils/theme/app_colors.dart';
@@ -7,6 +6,7 @@ import 'package:tranzgoo/utils/theme/app_style.dart';
 import 'package:tranzgoo/utils/widget/app_button.dart';
 import 'package:tranzgoo/utils/widget/app_state_widgets.dart';
 import 'package:tranzgoo/utils/widget/app_textfield.dart';
+import 'package:tranzgoo/utils/widget/responsive_layout.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({Key? key}) : super(key: key);
@@ -126,8 +126,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ? const AppLoadingState(message: 'Loading profile...')
           : errorMessage != null
               ? AppErrorState(message: errorMessage!, onRetry: loadProfile)
-              : SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(28, 20, 28, 30),
+              : AppResponsiveScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -163,7 +162,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         isText: true,
                         isLoading: isSaving,
                         labelColor: AppColors.whiteColor,
-                        width: 322.w,
                       ),
                     ],
                   ),

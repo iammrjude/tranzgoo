@@ -157,9 +157,15 @@ class _TransactionDetailScreenState extends State<TransactionDetailScreen> {
                       ...receiptItems(data ?? {}).map(
                         (item) => AppInfoCard(
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(item.label, style: AppText.mediumStyle),
+                              Expanded(
+                                child: Text(
+                                  item.label,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: AppText.mediumStyle,
+                                ),
+                              ),
                               const SizedBox(width: 12),
                               Flexible(
                                 child: Text(

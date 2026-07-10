@@ -20,5 +20,6 @@ class AppTheme {
         showUnselectedLabels: true,
       ),
       appBarTheme: const AppBarTheme(
-          scrolledUnderElevation: 0, color: AppColors.scaffoldLayoutColor));
+          scrolledUnderElevation: 0,
+          backgroundColor: AppColors.scaffoldLayoutColor));
 }

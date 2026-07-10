@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tranzgoo/data/services/api_exception.dart';
 import 'package:tranzgoo/data/services/tranzgoo_api_service.dart';
 import 'package:tranzgoo/utils/theme/app_colors.dart';
@@ -166,7 +165,6 @@ class _SupportScreenState extends State<SupportScreen> {
                         label: 'Create Ticket',
                         isText: true,
                         isLoading: isSubmitting,
-                        width: 322.w,
                       ),
                       const SizedBox(height: 24),
                       appSectionTitle('Your Tickets'),

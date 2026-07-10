@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tranzgoo/utils/theme/app_colors.dart';
 import 'package:tranzgoo/utils/theme/app_style.dart';
 import 'package:tranzgoo/utils/widget/app_button.dart';
+import 'package:tranzgoo/utils/widget/responsive_layout.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({Key? key}) : super(key: key);
@@ -16,15 +16,16 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Center(
+      body: AppResponsiveScrollView(
+        centerVertically: true,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset(
               'assets/images/tranzgooLogo.png',
               color: AppColors.primaryColor,
-              height: 60.08.h,
-              width: 110.w,
+              height: 60,
+              width: 110,
             ),
             const SizedBox(
               height: 20,
@@ -38,16 +39,22 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 children: [
                   Image.asset(
                     'assets/icons/googleIcon.png',
-                    width: 16.w,
-                    height: 16.h,
+                    width: 18,
+                    height: 18,
                   ),
                   const SizedBox(
                     width: 7,
                   ),
-                  Text(
-                    'Continue with Goggle',
-                    style: AppText.extraBold.copyWith(
-                        fontSize: 14.sp, color: AppColors.primaryColor),
+                  Expanded(
+                    child: Text(
+                      'Continue with Goggle',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppText.extraBold.copyWith(
+                        fontSize: 15,
+                        color: AppColors.primaryColor,
+                      ),
+                    ),
                   )
                 ],
               ),
@@ -64,16 +71,22 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 children: [
                   Image.asset(
                     'assets/icons/appleIcon.png',
-                    width: 16.w,
-                    height: 16.h,
+                    width: 18,
+                    height: 18,
                   ),
                   const SizedBox(
                     width: 7,
                   ),
-                  Text(
-                    'Continue with Apple',
-                    style: AppText.extraBold.copyWith(
-                        fontSize: 14.sp, color: AppColors.primaryColor),
+                  Expanded(
+                    child: Text(
+                      'Continue with Apple',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppText.extraBold.copyWith(
+                        fontSize: 15,
+                        color: AppColors.primaryColor,
+                      ),
+                    ),
                   )
                 ],
               ),
@@ -90,17 +103,21 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 children: [
                   Image.asset(
                     'assets/icons/microsoftIcon.png',
-                    width: 16.w,
-                    height: 16.h,
+                    width: 18,
+                    height: 18,
                   ),
                   const SizedBox(
                     width: 7,
                   ),
-                  Text(
-                    'Continue with Microsoft',
-                    style: AppText.extraBold.copyWith(
-                      fontSize: 14.sp,
-                      color: AppColors.primaryColor,
+                  Expanded(
+                    child: Text(
+                      'Continue with Microsoft',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppText.extraBold.copyWith(
+                        fontSize: 15,
+                        color: AppColors.primaryColor,
+                      ),
                     ),
                   )
                 ],
