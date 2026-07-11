@@ -144,6 +144,7 @@ GET /api/openapi.json         Raw OpenAPI document
 POST /api/auth/register
 POST /api/auth/login
 POST /api/auth/forgot-password
+POST /api/auth/verify-reset-code
 POST /api/auth/reset-password
 GET  /api/auth/me
 ```
@@ -241,6 +242,11 @@ development, if SMTP is not configured, the API returns the code in the response
 so the Flutter app can show a development reset code. In production,
 Nodemailer sends the code through the SMTP settings above, and the API fails if
 those settings are missing.
+
+`POST /api/auth/verify-reset-code` checks that a reset code is valid and has not
+expired before the app asks the user to choose a new password. The code remains
+usable for the final `POST /api/auth/reset-password` call until it expires or the
+password reset succeeds.
 
 ## Notes
 

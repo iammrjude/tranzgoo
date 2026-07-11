@@ -14,6 +14,7 @@ const routeDefinitions = [
   ['/auth/me', require('../routes/auth/me')],
   ['/auth/change-password', require('../routes/auth/change-password')],
   ['/auth/forgot-password', require('../routes/auth/forgot-password')],
+  ['/auth/verify-reset-code', require('../routes/auth/verify-reset-code')],
   ['/auth/reset-password', require('../routes/auth/reset-password')],
 
   ['/user/me', require('../routes/user/me')],

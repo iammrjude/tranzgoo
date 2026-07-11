@@ -53,6 +53,12 @@ class AuthService {
     return data is Map<String, dynamic> ? data : <String, dynamic>{};
   }
 
+  Future<void> verifyResetCode(String token) async {
+    await _apiClient.post('/api/auth/verify-reset-code', {
+      'token': token.trim(),
+    });
+  }
+
   Future<void> resetPassword({
     required String token,
     required String newPassword,

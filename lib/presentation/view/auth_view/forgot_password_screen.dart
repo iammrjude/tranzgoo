@@ -35,6 +35,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   Timer? resendTimer;
   int resendSecondsRemaining = 0;
   bool isRequestingCode = false;
+  bool isVerifyingCode = false;
   bool isResettingPassword = false;
 
   @override
@@ -115,15 +116,37 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     });
   }
 
-  void continueToPassword() {
+  Future<void> continueToPassword() async {
     if (tokenController.text.trim().isEmpty) {
       showMessage('Please enter the reset code.');
       return;
     }
 
     setState(() {
-      step = _ForgotPasswordStep.password;
+      isVerifyingCode = true;
     });
+
+    try {
+      await _authService.verifyResetCode(tokenController.text);
+
+      if (!mounted) {
+        return;
+      }
+
+      setState(() {
+        step = _ForgotPasswordStep.password;
+      });
+    } on ApiException catch (error) {
+      showMessage(error.message);
+    } catch (_) {
+      showMessage('Unable to verify reset code.');
+    } finally {
+      if (mounted) {
+        setState(() {
+          isVerifyingCode = false;
+        });
+      }
+    }
   }
 
   Future<void> resetPassword() async {
@@ -230,6 +253,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           onPressed: continueToPassword,
           label: 'Continue',
           isText: true,
+          isLoading: isVerifyingCode,
         ),
         const SizedBox(height: 8),
         Row(

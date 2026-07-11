@@ -273,6 +273,25 @@ module.exports = {
         }
       }
     },
+    '/api/auth/verify-reset-code': {
+      post: {
+        tags: ['Auth'],
+        summary: 'Verify a password reset code before accepting a new password',
+        requestBody: body(
+          {
+            token: { type: 'string', example: 'reset-code-from-email' }
+          },
+          ['token'],
+          {
+            token: 'reset-code-from-email'
+          }
+        ),
+        responses: {
+          200: jsonResponse('Password reset code verified'),
+          ...standardErrors
+        }
+      }
+    },
     '/api/auth/me': {
       get: {
         tags: ['Auth'],
