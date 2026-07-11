@@ -305,11 +305,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppTextField(
-          controller: tokenController,
-          hintText: 'Reset Code',
-          icon: const Icon(Icons.key),
-        ),
-        AppTextField(
           controller: passwordController,
           hintText: 'New Password',
           isObscure: true,
@@ -384,6 +379,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     }
   }
 
+  String get subtitle {
+    switch (step) {
+      case _ForgotPasswordStep.email:
+        return 'Enter your email address and we will send a reset code.';
+      case _ForgotPasswordStep.code:
+        return 'Enter the reset code sent to your email.';
+      case _ForgotPasswordStep.password:
+        return 'Choose a new password for your account.';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -395,9 +401,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             appSectionTitle('Forgot Password'),
             const SizedBox(height: 8),
             Text(
-              step == _ForgotPasswordStep.email
-                  ? 'Enter your email address and we will send a reset code.'
-                  : 'Enter the reset code sent to your email.',
+              subtitle,
               style: AppText.mediumStyle.copyWith(letterSpacing: 0.09),
             ),
             const SizedBox(height: 24),
