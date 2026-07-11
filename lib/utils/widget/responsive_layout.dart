@@ -25,8 +25,13 @@ class AppResponsive {
 
 class AppResponsiveFrame extends StatelessWidget {
   final Widget child;
+  final Color? backgroundColor;
 
-  const AppResponsiveFrame({super.key, required this.child});
+  const AppResponsiveFrame({
+    super.key,
+    required this.child,
+    this.backgroundColor,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +45,7 @@ class AppResponsiveFrame extends StatelessWidget {
     final framedWidth = math.min(size.width, AppResponsive.appMaxWidth);
 
     return ColoredBox(
-      color: AppColors.scaffoldLayoutColor,
+      color: backgroundColor ?? AppColors.scaffoldLayoutColor,
       child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(

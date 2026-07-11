@@ -1,6 +1,11 @@
 const crypto = require('crypto');
 const { readJsonBody, sendSuccess, withApi } = require('../../src/lib/api');
 const { connectDb } = require('../../src/lib/db');
+const { ApiError } = require('../../src/lib/errors');
+const {
+  hasMailTransport,
+  sendPasswordResetEmail
+} = require('../../src/lib/mailer');
 const { assertEmail, requireFields } = require('../../src/lib/validation');
 const User = require('../../src/models/User');
 
@@ -15,6 +20,11 @@ module.exports = withApi(
     requireFields(body, ['email']);
 
     const email = assertEmail(body.email);
+    const expiresInMinutes = 15;
+
+    if (process.env.NODE_ENV === 'production' && !hasMailTransport()) {
+      throw new ApiError(500, 'Password reset email is not configured');
+    }
 
     await connectDb();
 
@@ -26,12 +36,22 @@ module.exports = withApi(
     if (user) {
       resetToken = crypto.randomBytes(24).toString('hex');
       user.resetPasswordTokenHash = hashToken(resetToken);
-      user.resetPasswordExpiresAt = new Date(Date.now() + 15 * 60 * 1000);
+      user.resetPasswordExpiresAt = new Date(
+        Date.now() + expiresInMinutes * 60 * 1000
+      );
       await user.save();
+
+      if (hasMailTransport()) {
+        await sendPasswordResetEmail({
+          to: user.email,
+          resetToken,
+          expiresInMinutes
+        });
+      }
     }
 
     const data = {
-      expiresInMinutes: 15
+      expiresInMinutes
     };
 
     if (resetToken && process.env.NODE_ENV !== 'production') {

@@ -47,6 +47,18 @@ MONGODB_URI=your-mongodb-atlas-connection-string
 JWT_SECRET=a-long-random-secret
 JWT_EXPIRES_IN=7d
 CORS_ORIGIN=http://localhost:3000
+APP_NAME=TranzGOO
+
+# Required in production for forgot-password emails
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=your-smtp-username
+SMTP_PASS=your-smtp-password
+MAIL_FROM="TranzGOO <no-reply@example.com>"
+
+# Optional. Adds ?token=... links to reset emails.
+PASSWORD_RESET_URL=https://your-app.example.com/reset-password
 ```
 
 Start the API locally:
@@ -91,6 +103,14 @@ JWT_SECRET
 JWT_EXPIRES_IN
 CORS_ORIGIN
 NODE_ENV=production
+APP_NAME
+SMTP_HOST
+SMTP_PORT
+SMTP_SECURE
+SMTP_USER
+SMTP_PASS
+MAIL_FROM
+PASSWORD_RESET_URL
 ```
 
 1. Deploy.
@@ -123,6 +143,8 @@ GET /api/openapi.json         Raw OpenAPI document
 ```text
 POST /api/auth/register
 POST /api/auth/login
+POST /api/auth/forgot-password
+POST /api/auth/reset-password
 GET  /api/auth/me
 ```
 
@@ -211,6 +233,14 @@ Authorization: Bearer YOUR_JWT_TOKEN
   "password": "secret123"
 }
 ```
+
+## Password Reset Email
+
+`POST /api/auth/forgot-password` creates a 15-minute reset code. In
+development, if SMTP is not configured, the API returns the code in the response
+so the Flutter app can show a development reset code. In production,
+Nodemailer sends the code through the SMTP settings above, and the API fails if
+those settings are missing.
 
 ## Notes
 

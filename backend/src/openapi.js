@@ -223,6 +223,56 @@ module.exports = {
         }
       }
     },
+    '/api/auth/forgot-password': {
+      post: {
+        tags: ['Auth'],
+        summary: 'Request a password reset code',
+        requestBody: body(
+          {
+            email: { type: 'string', format: 'email', example: 'john@example.com' }
+          },
+          ['email'],
+          {
+            email: 'john@example.com'
+          }
+        ),
+        responses: {
+          202: jsonResponse('Password reset request accepted'),
+          ...standardErrors
+        }
+      }
+    },
+    '/api/auth/reset-password': {
+      post: {
+        tags: ['Auth'],
+        summary: 'Reset password with a valid reset code',
+        requestBody: body(
+          {
+            token: { type: 'string', example: 'reset-code-from-email' },
+            newPassword: {
+              type: 'string',
+              format: 'password',
+              example: 'newsecret123'
+            },
+            confirmPassword: {
+              type: 'string',
+              format: 'password',
+              example: 'newsecret123'
+            }
+          },
+          ['token', 'newPassword', 'confirmPassword'],
+          {
+            token: 'reset-code-from-email',
+            newPassword: 'newsecret123',
+            confirmPassword: 'newsecret123'
+          }
+        ),
+        responses: {
+          200: jsonResponse('Password reset successful'),
+          ...standardErrors
+        }
+      }
+    },
     '/api/auth/me': {
       get: {
         tags: ['Auth'],
